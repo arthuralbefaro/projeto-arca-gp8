@@ -8,9 +8,6 @@ import {
     UserRound,
     BookOpen,
     Files,
-    ChevronRight,
-    Contrast,
-    Circle,
     PawPrint,
 } from 'lucide-react';
 
@@ -18,46 +15,33 @@ export default function Header() {
     return (
         <header className="pm-header">
             <div className="pm-header-main">
-                <div className="arca-container">
-                    <div className="pm-header-top">
-                        <Link href="/" className="pm-logo">
-                            <div className="pm-logo-symbol">
-                                <PawPrint size={28} />
-                            </div>
+                <div className="arca-container pm-header-content">
+                    <Link href="/" className="pm-logo">
+                        <div className="pm-logo-symbol">
+                            <PawPrint size={22} />
+                        </div>
 
-                            <div className="pm-logo-text">
-                                <span>Prefeitura da</span>
-                                <strong>Serra</strong>
-                            </div>
-                        </Link>
-                    </div>
+                        <div className="pm-logo-text">
+                            <span>Prefeitura da</span>
+                            <strong>Serra</strong>
+                        </div>
+                    </Link>
 
-                    <div className="pm-header-nav">
-                        <button className="pm-search-button" type="button" aria-label="Pesquisar">
-                            <Search size={22} />
+                    <nav className="pm-main-links">
+                        <Link href="#">Transparência</Link>
+                        <Link href="#">Atendimentos</Link>
+                        <Link href="#">Notícias</Link>
+                        <Link href="#">Serviços</Link>
+                        <Link href="#">Acessibilidade</Link>
+                    </nav>
+
+                    <div className="pm-header-actions">
+                        <button type="button" aria-label="Pesquisar">
+                            <Search size={19} />
                         </button>
 
-                        <nav className="pm-main-links">
-                            <Link href="#">Transparência</Link>
-                            <Link href="#">Portal de Atendimentos</Link>
-                            <Link href="#">Legislação</Link>
-                            <Link href="#">Notícias</Link>
-                            <Link href="#">Carta de Serviços</Link>
-                            <Link href="#">Acessibilidade</Link>
-                        </nav>
-                    </div>
-
-                    <div className="pm-accessibility">
-                        <button type="button">A-</button>
-                        <button type="button">A</button>
-                        <button type="button">A+</button>
-
-                        <button type="button" aria-label="Contraste">
-                            <Contrast size={18} />
-                        </button>
-
-                        <button type="button" aria-label="Modo visual">
-                            <Circle size={18} />
+                        <button type="button" aria-label="Menu">
+                            <Menu size={21} />
                         </button>
                     </div>
                 </div>
@@ -66,50 +50,34 @@ export default function Header() {
             <div className="pm-category-bar">
                 <div className="arca-container">
                     <nav className="pm-category-nav">
-                        <button className="pm-menu-button" type="button" aria-label="Abrir menu">
-                            <Menu size={22} />
-                        </button>
-
                         <Link href="#" className="pm-category-link">
-                            <Building2 size={20} />
-                            <span>Secretarias</span>
-                            <ChevronRight size={17} />
+                            <Building2 size={18} />
+                            Secretarias
                         </Link>
 
                         <Link href="#" className="pm-category-link">
-                            <Users size={20} />
-                            <span>Cidadão</span>
-                            <ChevronRight size={17} />
+                            <Users size={18} />
+                            Cidadão
                         </Link>
 
                         <Link href="#" className="pm-category-link">
-                            <Landmark size={20} />
-                            <span>Empreendedor</span>
-                            <ChevronRight size={17} />
+                            <Landmark size={18} />
+                            Empreendedor
                         </Link>
 
                         <Link href="#" className="pm-category-link">
-                            <Building2 size={20} />
-                            <span>Prefeitura</span>
-                            <ChevronRight size={17} />
+                            <UserRound size={18} />
+                            Servidor
                         </Link>
 
                         <Link href="#" className="pm-category-link">
-                            <UserRound size={20} />
-                            <span>Servidor</span>
-                            <ChevronRight size={17} />
-                        </Link>
-
-                        <Link href="#" className="pm-category-link">
-                            <BookOpen size={20} />
-                            <span>Turista</span>
-                            <ChevronRight size={17} />
+                            <BookOpen size={18} />
+                            Turista
                         </Link>
 
                         <Link href="/registro" className="pm-category-link pm-category-highlight">
-                            <Files size={20} />
-                            <span>Serviços digitais</span>
-                            <ChevronRight size={17} />
+                            <Files size={18} />
+                            Programa ARCA
                         </Link>
                     </nav>
                 </div>
