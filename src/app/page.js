@@ -1,66 +1,119 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import HeroSection from '@/components/sections/HeroSection';
+import {
+    ClipboardCheck,
+    PhoneCall,
+    FileText,
+    HeartPulse,
+} from 'lucide-react';
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    return (
+        <div className="arca-page">
+            <Header />
+
+            <main>
+                <HeroSection />
+
+                <section className="arca-section">
+                    <div className="arca-container">
+                        <div className="mb-5">
+                            <h2 className="arca-section-title">Como funciona o programa</h2>
+                            <p className="arca-section-subtitle">
+                                O cadastro é o primeiro passo para que o tutor seja avaliado
+                                dentro dos critérios do Programa ARCA. Depois disso, a equipe
+                                responsável pode entrar em contato para orientar os próximos passos.
+                            </p>
+                        </div>
+
+                        <div className="row g-4">
+                            <div className="col-md-6 col-lg-3">
+                                <div className="arca-feature-card">
+                                    <div className="arca-feature-icon">
+                                        <ClipboardCheck size={24} />
+                                    </div>
+                                    <h3 className="h5 fw-bold">1. Cadastro</h3>
+                                    <p className="mb-0 text-muted">
+                                        O tutor informa seus dados pessoais, endereço, contato e perfil de atendimento.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6 col-lg-3">
+                                <div className="arca-feature-card">
+                                    <div className="arca-feature-icon">
+                                        <HeartPulse size={24} />
+                                    </div>
+                                    <h3 className="h5 fw-bold">2. Triagem</h3>
+                                    <p className="mb-0 text-muted">
+                                        A solicitação passa por análise de prioridade e disponibilidade de vagas.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6 col-lg-3">
+                                <div className="arca-feature-card">
+                                    <div className="arca-feature-icon">
+                                        <PhoneCall size={24} />
+                                    </div>
+                                    <h3 className="h5 fw-bold">3. Contato</h3>
+                                    <p className="mb-0 text-muted">
+                                        A Secretaria entra em contato para orientar documentos e agendamento.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6 col-lg-3">
+                                <div className="arca-feature-card">
+                                    <div className="arca-feature-icon">
+                                        <FileText size={24} />
+                                    </div>
+                                    <h3 className="h5 fw-bold">4. Orientação</h3>
+                                    <p className="mb-0 text-muted">
+                                        O tutor recebe instruções sobre guarda responsável e cuidados com o animal.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="arca-section pt-0">
+                    <div className="arca-container">
+                        <div className="arca-card">
+                            <div className="row align-items-center g-4">
+                                <div className="col-lg-7">
+                                    <h2 className="arca-section-title">
+                                        Cadastro não significa vaga imediata
+                                    </h2>
+
+                                    <p className="text-muted mb-0">
+                                        Após o envio, as informações serão analisadas pela equipe
+                                        responsável. A aprovação depende dos critérios do programa,
+                                        da documentação solicitada e da disponibilidade de vagas.
+                                    </p>
+                                </div>
+
+                                <div className="col-lg-5">
+                                    <div className="p-4 rounded-4" style={{ background: 'var(--arca-green-soft)' }}>
+                                        <h3 className="h5 fw-bold">Prioridades consideradas</h3>
+                                        <ul className="mb-0">
+                                            <li>Tutores inscritos no CadÚnico</li>
+                                            <li>Protetores independentes</li>
+                                            <li>ONGs de proteção animal</li>
+                                            <li>Áreas com maior vulnerabilidade social</li>
+                                            <li>Riscos epidemiológicos e saúde pública</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <Footer />
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+    );
 }
