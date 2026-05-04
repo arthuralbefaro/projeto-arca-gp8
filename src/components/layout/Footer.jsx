@@ -41,7 +41,7 @@ export default function Footer() {
                 <hr />
 
                 <p className="mb-0 text-muted small">
-                    Sistema acadêmico - Programa ARCA
+                    Programa ARCA - Serra ES
                 </p>
             </div>
         </footer>
