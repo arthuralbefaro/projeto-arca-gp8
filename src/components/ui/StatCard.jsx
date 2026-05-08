@@ -1,0 +1,17 @@
+export default function StatCard({ title, tvalue, description, icon: Icon }) {
+    return (
+        <div className="arca-stat-card">
+            <div>
+                <span>{title}</span>
+                <strong>{value}</strong>
+                {description && <p>{description}</p>}
+            </div>
+
+            {Icon && (
+                <div className="arca-stat-icon">
+                    <Icon size={24} />
+                </div>
+            )}
+        </div>
+    );
+}
