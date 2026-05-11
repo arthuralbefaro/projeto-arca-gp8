@@ -4,26 +4,48 @@ import { useState } from "react";
 import FormInput from "../ui/FormInput";
 import FormSection from "../ui/FormSection";
 import AlertBox from "../ui/AlertBox";
+import { formatCpf, isValidCpf, onlyCpfDigits } from "@/lib/cpf";
 
 export default function CastracaoForm() {
+
     const [message, setMessage] = useState(null);
+    const [cpf, setCpf] = useState("");
+    const [ cpfError, setCpfError ] = useState("");
+
+    function handleCpfChange(event) {
+      const formattedCpf = formatCpf(event.target.value);
+
+      setCpf(formattedCpf);
+      setMessage(null);
+
+      if (onlyCpfDigits(formattedCpf).length === 11 && !isValidCpf(formattedCpf)) {
+        setCpfError("CPF inválido.");
+        return;
+      }
+
+      setCpfError("");
+    }
 
     function handleSubmit(event) {
         event.preventDefault();
 
         const formData = new FormData(event.currentTarget);
-        const cpf = String(formData.get("cpf") || "").trim();
+        const cpfOnlyNumbers = onlyCpfDigits(cpf);
         const telefone = String(formData.get("telefone") || "").trim();
         const termo = formData.get("termo");
 
-        if (cpf.length !== 11) {
-            setMessage({
-                type: "warning",
-                title: "CPF inválido",
-                text: "Informe o CPF com 11 números, sem pontos ou traços.",
-            });
-            return;
+        if (!isValidCpf(cpf)) {
+          setCpfError("Digite um CPF válido.");
+
+          setMessage({
+            type: "warning",
+            title: "CPF inválido",
+            text: "Informe um CPF válido para continuar",
+          });
+
+          return;
         }
+        
 
         if (telefone.length < 10) {
             setMessage({
@@ -38,15 +60,35 @@ export default function CastracaoForm() {
             setMessage({
                 type: "warning",
                 title: "Confirmação obrigatória",
-                text: "Confirme que leu as informações antes de envuiar.",
+                text: "Confirme que leu as informações antes de enviar.",
             })
             return;
         }
 
+        const solicitacaoCastracao = {
+          nomeTutor: formData.get("nomeTutor"),
+          cpf: cpfOnlyNumbers,
+          telefone: formData.get("telefone"),
+          email: formData.get("email"),
+          nomeAnimal: formData.get("nomeAnimal"),
+          especie: formData.get("especie"),
+          raca: formData.get("raca"),
+          sexo: formData.get("sexo"),
+          porte: formData.get("porte"),
+          idade: formData.get("idade"),
+          localizacao: formData.get("localizacao"),
+          vacinado: formData.get("vacinado"),
+          doenca: formData.get("doenca"),
+          gestanteOuCio: formData.get("gestanteOuCio"),
+          observacoes: formData.get("observacoes"),
+        };
+
+        console.log("Solicitação de castração:", solicitacaoCastracao);
+
         setMessage({
             type: "success",
             title: "Formulário validado",
-            text: "Os dados foram preenchidos corretamente. (ainda tá sem backend",
+            text: "Os dados foram preenchidos corretamente. (ainda tá sem backend)",
         });
     }
 
@@ -75,13 +117,22 @@ export default function CastracaoForm() {
           </div>
 
           <div className="col-md-4">
-            <FormInput
+            <FormInput 
               label="CPF"
               name="cpf"
-              placeholder="Somente números"
+              value={cpf}
+              onChange={handleCpfChange}
+              placeholder="000.000.000-00"
+              maxLength={14}
               required
-              helper="Digite apenas os 11 números do CPF."
+              helper={cpfError || "Digite apenas números. O sistema formatará automaticamente."}
             />
+
+            { cpfError && (
+              <small className="text-danger d-block mt-1">
+                {cpfError}
+              </small>
+            )}
           </div>
 
           <div className="col-md-6">

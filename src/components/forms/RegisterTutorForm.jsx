@@ -1,10 +1,62 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
+
 import FormInput from '@/components/ui/FormInput';
 import { bairrosSerra, tiposSolicitante } from '@/lib/constants';
+import { formatCpf, isValidCpf, onlyCpfDigits } from '@/lib/cpf';
 
 export default function RegisterTutorForm() {
+  const [cpf, setCpf] = useState('');
+  const [cpfError, setCpfError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  function handleCpfChange(event) {
+    const formattedCpf = formatCpf(event.target.value);
+
+    setCpf(formattedCpf);
+    setSuccessMessage('');
+
+    if (onlyCpfDigits(formattedCpf).length === 11 && !isValidCpf(formattedCpf)) {
+      setCpfError('CPF inválido.');
+      return;
+    }
+
+    setCpfError('');
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    if (!isValidCpf(cpf)) {
+      setCpfError('Digite um CPF válido.');
+      return;
+    }
+
+    const formData = new FormData(event.currentTarget);
+
+    const tutorData = {
+      nomeCompleto: formData.get('nomeCompleto'),
+      cpf: onlyCpfDigits(cpf),
+      dataNascimento: formData.get('dataNascimento'),
+      telefone: formData.get('telefone'),
+      email: formData.get('email'),
+      endereco: formData.get('endereco'),
+      bairro: formData.get('bairro'),
+      tipoSolicitante: formData.get('tipoSolicitante'),
+      nis: formData.get('nis'),
+      senha: formData.get('senha'),
+      confirmarSenha: formData.get('confirmarSenha'),
+    };
+
+    console.log('Dados do tutor:', tutorData);
+
+    setSuccessMessage('CPF válido. Cadastro pronto para ser enviado ao backend futuramente.');
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div className="arca-form-section">
         <h2>Dados pessoais</h2>
         <p>Informe os dados básicos do tutor responsável pelo cadastro.</p>
@@ -23,9 +75,19 @@ export default function RegisterTutorForm() {
             <FormInput
               label="CPF"
               name="cpf"
-              placeholder="Somente números"
+              value={cpf}
+              onChange={handleCpfChange}
+              placeholder="000.000.000-00"
+              maxLength={14}
               required
+              helper={cpfError || 'Digite apenas números. O sistema formatará automaticamente.'}
             />
+
+            {cpfError && (
+              <small className="text-danger d-block mt-1">
+                {cpfError}
+              </small>
+            )}
           </div>
 
           <div className="col-md-4">
@@ -41,6 +103,7 @@ export default function RegisterTutorForm() {
 
       <div className="arca-form-section">
         <h2>Contato</h2>
+
         <p>Essas informações poderão ser usadas pela equipe para orientar o atendimento.</p>
 
         <div className="row">
@@ -67,6 +130,7 @@ export default function RegisterTutorForm() {
 
       <div className="arca-form-section">
         <h2>Endereço</h2>
+
         <p>O atendimento é destinado a moradores do município da Serra.</p>
 
         <div className="row">
@@ -100,6 +164,7 @@ export default function RegisterTutorForm() {
 
       <div className="arca-form-section">
         <h2>Perfil do solicitante</h2>
+
         <p>Essas informações ajudam na triagem e nos critérios de prioridade.</p>
 
         <div className="row">
@@ -136,6 +201,7 @@ export default function RegisterTutorForm() {
 
       <div className="arca-form-section">
         <h2>Acesso ao sistema</h2>
+
         <p>Crie uma senha para acessar futuramente a área do tutor.</p>
 
         <div className="row">
@@ -177,12 +243,18 @@ export default function RegisterTutorForm() {
         </div>
       </div>
 
+      {successMessage && (
+        <div className="alert alert-success rounded-4">
+          {successMessage}
+        </div>
+      )}
+
       <div className="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-center">
         <Link href="/login" className="arca-small-link text-decoration-none">
           Já possui cadastro? Entrar
         </Link>
 
-        <button type="button" className="arca-primary-btn px-5">
+        <button type="submit" className="arca-primary-btn px-5">
           Cadastrar tutor
         </button>
       </div>
