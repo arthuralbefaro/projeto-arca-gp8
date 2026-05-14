@@ -10,7 +10,7 @@ export default function CastracaoForm() {
 
     const [message, setMessage] = useState(null);
     const [cpf, setCpf] = useState("");
-    const [ cpfError, setCpfError ] = useState("");
+    const [cpfError, setCpfError] = useState("");
 
     function handleCpfChange(event) {
       const formattedCpf = formatCpf(event.target.value);
@@ -182,7 +182,7 @@ export default function CastracaoForm() {
             <FormInput
               label="Raça"
               name="raca"
-              placeholder="Ex.: SRD"
+              placeholder="Ex.: Shih-tzu"
               required
             />
           </div>
