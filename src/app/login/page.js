@@ -1,32 +1,93 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import LoginForm from '@/components/forms/LoginForm';
-
-export const metadata = {
-  title: 'Login | Programa ARCA',
-};
+import Toast from '@/components/ui/Toast';
+import { setAdminAuth } from '@/lib/arca-storage';
+import { Lock, ShieldCheck } from 'lucide-react';
 
 export default function LoginPage() {
-  return (
-    <div className="arca-page">
-      <Header />
+    const router = useRouter();
+    const [toast, setToast] = useState('');
+    const [form, setForm] = useState({
+        email: 'admin@arca.serra.es.gov.br',
+        password: 'admin123',
+    });
 
-      <main className="arca-auth-wrapper">
-        <div className="arca-container">
-          <div className="arca-login-card">
-            <h1 className="arca-auth-title h3 mb-2">Acessar minha conta</h1>
+    function updateField(field, value) {
+        setForm((current) => ({
+            ...current,
+            [field]: value,
+        }));
+    }
 
-            <p className="text-muted mb-4">
-              Use seu e-mail e senha cadastrados para acompanhar suas informações
-              e futuras solicitações no Programa ARCA.
-            </p>
+    function handleSubmit(event) {
+        event.preventDefault();
 
-            <LoginForm />
-          </div>
+        if (form.email === 'admin@arca.serra.es.gov.br' && form.password === 'admin123') {
+            setAdminAuth(true);
+            router.push('/admin/relatorios');
+            return;
+        }
+
+        setToast('E-mail ou senha inválidos.');
+    }
+
+    return (
+        <div className="arca-page">
+            <Header />
+            <Toast message={toast} onClose={() => setToast('')} />
+
+            <main className="arca-section">
+                <div className="arca-container arca-auth-wrap">
+                    <section className="arca-auth-card">
+            <span className="arca-card-icon">
+              <ShieldCheck size={25} />
+            </span>
+
+                        <h1>Acesso administrativo demo</h1>
+
+                        <p>
+                            Área demonstrativa para acompanhamento das solicitações do Programa ARCA.
+                        </p>
+
+                        <div className="arca-demo-credentials">
+                            <strong>Credenciais de teste</strong>
+                            <span>E-mail: admin@arca.serra.es.gov.br</span>
+                            <span>Senha: admin123</span>
+                        </div>
+
+                        <form onSubmit={handleSubmit}>
+                            <label>
+                                E-mail
+                                <input
+                                    type="email"
+                                    value={form.email}
+                                    onChange={(event) => updateField('email', event.target.value)}
+                                />
+                            </label>
+
+                            <label>
+                                Senha
+                                <input
+                                    type="password"
+                                    value={form.password}
+                                    onChange={(event) => updateField('password', event.target.value)}
+                                />
+                            </label>
+
+                            <button type="submit" className="arca-btn arca-btn-primary">
+                                Entrar no painel
+                                <Lock size={18} />
+                            </button>
+                        </form>
+                    </section>
+                </div>
+            </main>
+
+            <Footer />
         </div>
-      </main>
-
-      <Footer />
-    </div>
-  );
+    );
 }
