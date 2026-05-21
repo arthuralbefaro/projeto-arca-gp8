@@ -1,4 +1,4 @@
-export default function StatCard({ title, tvalue, description, icon: Icon }) {
+export default function StatCard({ title, value, description, icon: Icon }) {
     return (
         <div className="arca-stat-card">
             <div>
