@@ -6,6 +6,7 @@ import {
   FileText,
   LogIn,
   Menu,
+  PawPrint,
   Search,
   ShieldCheck,
   UserPlus,
@@ -32,11 +33,7 @@ export default function Header() {
         <div className="arca-header-inner">
           <Link href="/" className="arca-brand" onClick={closeMenu}>
           <span className="arca-brand-mark">
-            <img
-              src="/projeto-arca-gp8/logo-serra.jpg"
-              alt="Prefeitura da Serra"
-              className="arca-brand-logo"
-            />
+            <PawPrint size={23} />
           </span>
 
             <span className="arca-brand-text">
