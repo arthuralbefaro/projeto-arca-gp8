@@ -1,2 +1,2 @@
-:HL["/projeto-arca-gp8/_next/static/chunks/01~ugjsfp2bix.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"como-funciona","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"o_KXQKh4F5zdlNJ7-qzJb"}
+:HL["/projeto-arca-gp8/_next/static/chunks/162vyc5.7zcah.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"como-funciona","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"BP3Ny06X_86Z92GN5COAB"}
