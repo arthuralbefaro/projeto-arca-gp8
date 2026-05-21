@@ -1,20 +1,25 @@
 :root {
-  --arca-bg: #f4fbf8;
-  --arca-bg-strong: #e6f6ef;
+  --arca-bg: #f4f8ff;
+  --arca-bg-strong: #e6f0ff;
   --arca-surface: #ffffff;
-  --arca-surface-soft: rgba(255, 255, 255, 0.78);
-  --arca-green: #157347;
-  --arca-green-dark: #0f5132;
-  --arca-green-soft: #dff4ea;
-  --arca-teal: #0f766e;
-  --arca-blue: #1d4ed8;
+  --arca-surface-soft: rgba(255, 255, 255, 0.8);
+
+  --arca-green: #0057b8;
+  --arca-green-dark: #003b7a;
+  --arca-green-soft: #e7f0ff;
+  --arca-teal: #009fe3;
+  --arca-blue: #0057b8;
+
   --arca-orange: #f59e0b;
   --arca-red: #dc2626;
-  --arca-text: #10231b;
-  --arca-muted: #60756c;
-  --arca-border: rgba(15, 81, 50, 0.12);
-  --arca-shadow: 0 24px 70px rgba(15, 81, 50, 0.12);
-  --arca-shadow-hover: 0 30px 90px rgba(15, 81, 50, 0.22);
+
+  --arca-text: #102033;
+  --arca-muted: #5f728a;
+  --arca-border: rgba(0, 59, 122, 0.13);
+
+  --arca-shadow: 0 24px 70px rgba(0, 59, 122, 0.12);
+  --arca-shadow-hover: 0 30px 90px rgba(0, 59, 122, 0.22);
+
   --arca-radius: 28px;
   --arca-radius-md: 20px;
   --arca-radius-sm: 14px;
@@ -31,8 +36,8 @@ html {
 body {
   margin: 0;
   background:
-          radial-gradient(circle at top left, rgba(21, 115, 71, 0.16), transparent 34%),
-          radial-gradient(circle at top right, rgba(15, 118, 110, 0.12), transparent 30%),
+          radial-gradient(circle at top left, rgba(0, 87, 184, 0.16), transparent 34%),
+          radial-gradient(circle at top right, rgba(0, 159, 227, 0.12), transparent 30%),
           linear-gradient(180deg, #f6fffb 0%, #eef8f3 45%, #ffffff 100%);
   color: var(--arca-text);
   font-family:
@@ -116,7 +121,7 @@ svg {
   z-index: 50;
   backdrop-filter: blur(22px);
   background: rgba(246, 255, 251, 0.78);
-  border-bottom: 1px solid rgba(15, 81, 50, 0.08);
+  border-bottom: 1px solid rgba(0, 59, 122, 0.08);
 }
 
 .arca-header-inner {
@@ -147,7 +152,7 @@ svg {
   background:
           radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.4), transparent 28%),
           linear-gradient(135deg, var(--arca-green), var(--arca-teal));
-  box-shadow: 0 14px 35px rgba(21, 115, 71, 0.28);
+  box-shadow: 0 14px 35px rgba(0, 87, 184, 0.28);
 }
 
 .arca-brand-text {
@@ -206,7 +211,7 @@ svg {
   border-radius: 14px;
   background: #ffffff;
   color: var(--arca-green-dark);
-  box-shadow: 0 10px 30px rgba(15, 81, 50, 0.12);
+  box-shadow: 0 10px 30px rgba(0, 59, 122, 0.12);
 }
 
 .arca-mobile-menu {
@@ -227,8 +232,8 @@ svg {
   position: absolute;
   inset: 0;
   background:
-          linear-gradient(90deg, rgba(21, 115, 71, 0.05) 1px, transparent 1px),
-          linear-gradient(180deg, rgba(21, 115, 71, 0.05) 1px, transparent 1px);
+          linear-gradient(90deg, rgba(0, 87, 184, 0.05) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(0, 87, 184, 0.05) 1px, transparent 1px);
   background-size: 44px 44px;
   mask-image: linear-gradient(to bottom, #000000, transparent 82%);
   pointer-events: none;
@@ -255,7 +260,7 @@ svg {
   font-weight: 900;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  border: 1px solid rgba(21, 115, 71, 0.12);
+  border: 1px solid rgba(0, 87, 184, 0.12);
 }
 
 .arca-hero h1 {
@@ -309,7 +314,7 @@ svg {
   overflow: hidden;
   background:
           linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(223, 244, 234, 0.78)),
-          radial-gradient(circle at top right, rgba(15, 118, 110, 0.18), transparent 35%);
+          radial-gradient(circle at top right, rgba(0, 159, 227, 0.18), transparent 35%);
   border: 1px solid var(--arca-border);
   box-shadow: var(--arca-shadow);
   animation: arcaFloat 7s ease-in-out infinite;
@@ -323,7 +328,7 @@ svg {
   right: -90px;
   top: -80px;
   border-radius: 50%;
-  background: rgba(21, 115, 71, 0.12);
+  background: rgba(0, 87, 184, 0.12);
 }
 
 .arca-hero-card::after {
@@ -334,7 +339,7 @@ svg {
   left: -70px;
   bottom: -70px;
   border-radius: 50%;
-  background: rgba(15, 118, 110, 0.12);
+  background: rgba(0, 159, 227, 0.12);
 }
 
 .arca-pet-visual {
@@ -346,7 +351,7 @@ svg {
   border-radius: 30px;
   background:
           radial-gradient(circle at 48% 32%, #ffffff 0 14%, transparent 15%),
-          linear-gradient(145deg, rgba(21, 115, 71, 0.92), rgba(15, 118, 110, 0.86));
+          linear-gradient(145deg, rgba(0, 87, 184, 0.92), rgba(0, 159, 227, 0.86));
   color: #ffffff;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
 }
@@ -366,7 +371,7 @@ svg {
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.86);
   border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 22px 60px rgba(15, 81, 50, 0.18);
+  box-shadow: 0 22px 60px rgba(0, 59, 122, 0.18);
   backdrop-filter: blur(16px);
   animation: arcaRiseIn 0.8s ease both;
 }
@@ -424,19 +429,19 @@ svg {
 .arca-btn-primary {
   color: #ffffff;
   background: linear-gradient(135deg, var(--arca-green), var(--arca-teal));
-  box-shadow: 0 16px 42px rgba(21, 115, 71, 0.28);
+  box-shadow: 0 16px 42px rgba(0, 87, 184, 0.28);
 }
 
 .arca-btn-primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 22px 58px rgba(21, 115, 71, 0.35);
+  box-shadow: 0 22px 58px rgba(0, 87, 184, 0.35);
 }
 
 .arca-btn-secondary {
   color: var(--arca-green-dark);
   background: #ffffff;
   border-color: var(--arca-border);
-  box-shadow: 0 12px 34px rgba(15, 81, 50, 0.1);
+  box-shadow: 0 12px 34px rgba(0, 59, 122, 0.1);
 }
 
 .arca-btn-secondary:hover {
@@ -455,7 +460,7 @@ svg {
   border-radius: var(--arca-radius);
   background: var(--arca-surface-soft);
   border: 1px solid var(--arca-border);
-  box-shadow: 0 16px 45px rgba(15, 81, 50, 0.08);
+  box-shadow: 0 16px 45px rgba(0, 59, 122, 0.08);
   backdrop-filter: blur(16px);
   transition:
           transform 0.28s ease,
@@ -470,7 +475,7 @@ svg {
   position: absolute;
   inset: 0;
   background:
-          radial-gradient(circle at top right, rgba(21, 115, 71, 0.14), transparent 32%),
+          radial-gradient(circle at top right, rgba(0, 87, 184, 0.14), transparent 32%),
           linear-gradient(135deg, rgba(255,255,255,0.4), transparent);
   opacity: 0;
   transition: 0.28s ease;
@@ -479,7 +484,7 @@ svg {
 
 .arca-card:hover {
   transform: translateY(-9px);
-  border-color: rgba(21, 115, 71, 0.28);
+  border-color: rgba(0, 87, 184, 0.28);
   box-shadow: var(--arca-shadow-hover);
   background: #ffffff;
 }
@@ -502,7 +507,7 @@ svg {
   border-radius: 18px;
   color: #ffffff;
   background: linear-gradient(135deg, var(--arca-green), var(--arca-teal));
-  box-shadow: 0 14px 36px rgba(21, 115, 71, 0.22);
+  box-shadow: 0 14px 36px rgba(0, 87, 184, 0.22);
   transition: 0.28s ease;
 }
 
@@ -597,7 +602,7 @@ svg {
   border-radius: 34px;
   background: rgba(255, 255, 255, 0.68);
   border: 1px solid var(--arca-border);
-  box-shadow: 0 20px 55px rgba(15, 81, 50, 0.08);
+  box-shadow: 0 20px 55px rgba(0, 59, 122, 0.08);
   backdrop-filter: blur(18px);
 }
 
@@ -608,7 +613,7 @@ svg {
   padding: 22px;
   border-radius: 24px;
   background: linear-gradient(180deg, #ffffff, #f5fbf8);
-  border: 1px solid rgba(15, 81, 50, 0.08);
+  border: 1px solid rgba(0, 59, 122, 0.08);
 }
 
 .arca-stat-number {
@@ -642,7 +647,7 @@ svg {
   top: 10px;
   bottom: 10px;
   width: 2px;
-  background: linear-gradient(to bottom, var(--arca-green), rgba(21, 115, 71, 0.08));
+  background: linear-gradient(to bottom, var(--arca-green), rgba(0, 87, 184, 0.08));
 }
 
 .arca-timeline-item {
@@ -664,7 +669,7 @@ svg {
   color: #ffffff;
   background: linear-gradient(135deg, var(--arca-green), var(--arca-teal));
   font-weight: 950;
-  box-shadow: 0 16px 40px rgba(21, 115, 71, 0.22);
+  box-shadow: 0 16px 40px rgba(0, 87, 184, 0.22);
 }
 
 .arca-timeline-content {
@@ -672,13 +677,13 @@ svg {
   border-radius: 24px;
   background: #ffffff;
   border: 1px solid var(--arca-border);
-  box-shadow: 0 16px 42px rgba(15, 81, 50, 0.07);
+  box-shadow: 0 16px 42px rgba(0, 59, 122, 0.07);
   transition: 0.25s ease;
 }
 
 .arca-timeline-item:hover .arca-timeline-content {
   transform: translateX(6px);
-  box-shadow: 0 22px 58px rgba(15, 81, 50, 0.12);
+  box-shadow: 0 22px 58px rgba(0, 59, 122, 0.12);
 }
 
 .arca-timeline-content h3 {
@@ -749,8 +754,8 @@ svg {
   padding: 56px 0 32px;
   color: #dbeee6;
   background:
-          radial-gradient(circle at top left, rgba(21, 115, 71, 0.32), transparent 32%),
-          linear-gradient(135deg, #09251a, #0f3f2b);
+          radial-gradient(circle at top left, rgba(0, 87, 184, 0.32), transparent 32%),
+          linear-gradient(135deg, #061b3a, #003b7a);
 }
 
 .arca-footer-grid {
@@ -809,7 +814,7 @@ svg {
   border-radius: var(--arca-radius);
   background: #ffffff;
   border: 1px solid var(--arca-border);
-  box-shadow: 0 18px 50px rgba(15, 81, 50, 0.09);
+  box-shadow: 0 18px 50px rgba(0, 59, 122, 0.09);
 }
 
 .arca-input,
@@ -819,7 +824,7 @@ input,
 select,
 textarea {
   border-radius: 15px;
-  border: 1px solid rgba(15, 81, 50, 0.16);
+  border: 1px solid rgba(0, 59, 122, 0.16);
   background: #ffffff;
   color: var(--arca-text);
   outline: none;
@@ -839,7 +844,7 @@ textarea:focus,
 .arca-select:focus,
 .arca-textarea:focus {
   border-color: var(--arca-green);
-  box-shadow: 0 0 0 4px rgba(21, 115, 71, 0.12);
+  box-shadow: 0 0 0 4px rgba(0, 87, 184, 0.12);
 }
 
 /* =========================
@@ -933,7 +938,7 @@ textarea:focus,
     border-radius: 24px;
     background: #ffffff;
     border: 1px solid var(--arca-border);
-    box-shadow: 0 20px 60px rgba(15, 81, 50, 0.14);
+    box-shadow: 0 20px 60px rgba(0, 59, 122, 0.14);
     animation: arcaFadeUp 0.25s ease both;
   }
 
