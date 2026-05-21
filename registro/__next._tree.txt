@@ -1,0 +1,2 @@
+:HL["/projeto-arca-gp8/_next/static/chunks/0ufi55d-2~hta.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"registro","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"eC9_BwaxHjejNMan32NuK"}
