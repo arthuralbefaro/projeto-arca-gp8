@@ -17,60 +17,71 @@ export const bairrosSerra = [
 ];
 
 export const tiposSolicitante = [
-  {
-    value: 'MUNICIPE',
-    label: 'Munícipe',
-  },
-  {
-    value: 'CADUNICO',
-    label: 'Inscrito no CadÚnico',
-  },
-  {
-    value: 'PROTETOR',
-    label: 'Protetor independente',
-  },
-  {
-    value: 'ONG',
-    label: 'ONG ou projeto de proteção animal',
-  },
+  { value: 'MUNICIPE', label: 'Munícipe' },
+  { value: 'CADUNICO', label: 'Inscrito no CadÚnico' },
+  { value: 'PROTETOR', label: 'Protetor independente' },
+  { value: 'ONG', label: 'ONG ou projeto de proteção animal' },
+];
+
+export const servicosPrograma = [
+  { value: 'CASTRACAO', label: 'Solicitação de castração' },
+  { value: 'TRIAGEM', label: 'Triagem de atendimento animal' },
+  { value: 'ORIENTACAO', label: 'Orientação sobre guarda responsável' },
+  { value: 'ATUALIZACAO', label: 'Atualização de cadastro' },
+];
+
+export const especiesAnimais = [
+  { value: 'CACHORRO', label: 'Cachorro' },
+  { value: 'GATO', label: 'Gato' },
+  { value: 'AMBOS', label: 'Cachorro e gato' },
+];
+
+export const statusSolicitacao = [
+  'Cadastro recebido',
+  'Em triagem',
+  'Documentos pendentes',
+  'Aprovado',
+  'Agendamento disponível',
+  'Atendimento realizado',
+  'Recusado',
 ];
 
 export const etapasPrograma = [
   {
     number: '01',
-    title: 'Cadastro',
+    title: 'Faça seu cadastro',
     description:
-      'O tutor informa seus dados pessoais, endereço, contato e perfil de atendimento.',
+      'O tutor informa dados pessoais, endereço, contato, perfil de prioridade e informações iniciais sobre os animais.',
   },
   {
     number: '02',
-    title: 'Triagem',
+    title: 'Aguarde a triagem',
     description:
-      'A equipe responsável avalia as informações e verifica os critérios de prioridade.',
+      'A equipe responsável avalia os dados, verifica critérios de prioridade e identifica possíveis pendências.',
   },
   {
     number: '03',
-    title: 'Contato da equipe',
+    title: 'Receba o contato da equipe',
     description:
-      'A Secretaria poderá entrar em contato por telefone ou e-mail para orientar os próximos passos.',
+      'A Secretaria poderá entrar em contato por telefone ou e-mail para confirmar informações e orientar os próximos passos.',
   },
   {
     number: '04',
-    title: 'Orientação educativa',
+    title: 'Separe os documentos',
     description:
-      'O tutor recebe orientações sobre guarda responsável, saúde pública e bem-estar animal.',
+      'Quando necessário, o tutor deverá apresentar documentos pessoais, comprovante de residência e informações do animal.',
   },
   {
     number: '05',
-    title: 'Agendamento',
+    title: 'Aguarde disponibilidade de vaga',
     description:
-      'Após a validação, o atendimento poderá ser agendado conforme disponibilidade do programa.',
+      'Após a validação, a solicitação poderá avançar para agendamento conforme os critérios do programa.',
   },
   {
     number: '06',
-    title: 'Atendimento',
+    title: 'Compareça ao atendimento',
     description:
-      'O animal é encaminhado para o procedimento ou serviço solicitado, conforme a situação.',
+      'O animal será encaminhado para o procedimento ou serviço solicitado, conforme a situação aprovada.',
   },
 ];
 
@@ -88,6 +99,7 @@ export const documentosPrograma = [
   'Comprovante de residência no município da Serra',
   'Comprovante do NIS, quando aplicável',
   'Cartão de vacinação antirrábica atualizado',
+  'Fotos ou informações complementares do animal, quando solicitadas',
 ];
 
 export const avisosImportantes = [

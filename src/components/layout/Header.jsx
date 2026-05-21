@@ -3,18 +3,17 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import {
-  Search,
-  Menu,
-  X,
-  Users,
-  Landmark,
-  Building2,
-  UserRound,
   BookOpen,
-  Files,
-  PawPrint,
+  Building2,
   ClipboardCheck,
-  BarChart3,
+  Files,
+  Landmark,
+  Menu,
+  PawPrint,
+  Search,
+  UserRound,
+  Users,
+  X,
 } from 'lucide-react';
 
 export default function Header() {
@@ -23,27 +22,37 @@ export default function Header() {
   const mainLinks = [
     { label: 'Início', href: '/' },
     { label: 'Como funciona', href: '/como-funciona' },
+    { label: 'Documentos', href: '/documentos' },
     { label: 'Castração', href: '/servicos/castracao' },
     { label: 'Consulta', href: '/consulta' },
-    { label: 'Relatórios', href: '/admin/relatorios' },
+  ];
+
+  const categoryLinks = [
+    { label: 'Secretarias', href: '#', icon: Landmark },
+    { label: 'Cidadão', href: '#', icon: Users },
+    { label: 'Empreendedor', href: '#', icon: Building2 },
+    { label: 'Servidor', href: '#', icon: UserRound },
+    { label: 'Educação', href: '#', icon: BookOpen },
+    { label: 'Documentos', href: '/documentos', icon: Files },
+    { label: 'Castração', href: '/servicos/castracao', icon: PawPrint, highlight: true },
+    { label: 'Cadastro', href: '/registro', icon: ClipboardCheck, highlight: true },
   ];
 
   return (
     <header className="pm-header">
       <div className="pm-header-main">
         <div className="arca-container pm-header-content">
-          <Link href="/" className="pm-logo" onClick={() => setIsOpen(false)}>
-            <div className="pm-logo-symbol">
-              <PawPrint size={22} />
-            </div>
-
-            <div className="pm-logo-text">
-              <span>Prefeitura da</span>
-              <strong>Serra</strong>
-            </div>
+          <Link className="pm-logo" href="/" onClick={() => setIsOpen(false)}>
+            <span className="pm-logo-symbol">
+              <PawPrint size={23} />
+            </span>
+            <span className="pm-logo-text">
+              <span>Programa</span>
+              <strong>ARCA</strong>
+            </span>
           </Link>
 
-          <nav className="pm-main-links" aria-label="Menu principal">
+          <nav className="pm-main-links" aria-label="Navegação principal">
             {mainLinks.map((link) => (
               <Link key={link.href} href={link.href}>
                 {link.label}
@@ -52,91 +61,58 @@ export default function Header() {
           </nav>
 
           <div className="pm-header-actions">
+            <Link className="arca-primary-btn py-2 px-3 d-none d-md-inline-flex" href="/registro">
+              Cadastrar tutor
+            </Link>
             <button type="button" aria-label="Pesquisar">
-              <Search size={19} />
+              <Search size={18} />
             </button>
-
             <button
               type="button"
-              aria-label={isOpen ? 'Fechar menu' : 'Abrir menu'}
-              aria-expanded={isOpen}
-              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Abrir menu"
+              className="d-lg-none"
+              onClick={() => setIsOpen((current) => !current)}
             >
-              {isOpen ? <X size={21} /> : <Menu size={21} />}
+              {isOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
 
         {isOpen && (
           <div className="pm-mobile-panel">
-            <div className="arca-container">
-              <nav className="pm-mobile-links" aria-label="Menu mobile">
-                {mainLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-
-                <Link href="/registro" onClick={() => setIsOpen(false)}>
-                  Cadastro do tutor
+            <div className="arca-container pm-mobile-links">
+              {mainLinks.map((link) => (
+                <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}>
+                  {link.label}
                 </Link>
-
-                <Link href="/login" onClick={() => setIsOpen(false)}>
-                  Acessar minha conta
-                </Link>
-              </nav>
+              ))}
+              <Link href="/registro" onClick={() => setIsOpen(false)}>
+                Cadastro do tutor
+              </Link>
+              <Link href="/login" onClick={() => setIsOpen(false)}>
+                Acessar minha conta
+              </Link>
             </div>
           </div>
         )}
       </div>
 
       <div className="pm-category-bar">
-        <div className="arca-container">
-          <nav className="pm-category-nav" aria-label="Categorias">
-            <Link href="#" className="pm-category-link">
-              <Building2 size={18} />
-              Secretarias
-            </Link>
+        <div className="arca-container pm-category-nav">
+          {categoryLinks.map((link) => {
+            const Icon = link.icon;
 
-            <Link href="#" className="pm-category-link">
-              <Users size={18} />
-              Cidadão
-            </Link>
-
-            <Link href="#" className="pm-category-link">
-              <Landmark size={18} />
-              Empreendedor
-            </Link>
-
-            <Link href="#" className="pm-category-link">
-              <UserRound size={18} />
-              Servidor
-            </Link>
-
-            <Link href="#" className="pm-category-link">
-              <BookOpen size={18} />
-              Turista
-            </Link>
-
-            <Link href="/servicos/castracao" className="pm-category-link pm-category-highlight">
-              <ClipboardCheck size={18} />
-              Castração
-            </Link>
-
-            <Link href="/admin/relatorios" className="pm-category-link">
-              <BarChart3 size={18} />
-              Relatórios
-            </Link>
-
-            <Link href="/registro" className="pm-category-link">
-              <Files size={18} />
-              Cadastro
-            </Link>
-          </nav>
+            return (
+              <Link
+                key={`${link.label}-${link.href}`}
+                className={`pm-category-link ${link.highlight ? 'pm-category-highlight' : ''}`}
+                href={link.href}
+              >
+                <Icon size={16} />
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </header>

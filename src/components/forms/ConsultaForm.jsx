@@ -1,107 +1,166 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
+import AlertBox from '@/components/ui/AlertBox';
 import FormInput from '@/components/ui/FormInput';
 import StatusBadge from '@/components/ui/StatusBadge';
-import AlertBox from '@/components/ui/AlertBox';
+import { findSolicitacao, formatDate, getStatusNextStep } from '@/lib/arcaStorage';
+import { statusSolicitacao } from '@/lib/constants';
 
 export default function ConsultaForm() {
+  const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
 
   function handleSubmit(event) {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
-    const cpf = String(formData.get('cpf') || '').trim();
-    const protocolo = String(formData.get('protocolo') || '').trim();
-
-    if (!cpf && !protocolo) {
-      setError('Informe o CPF ou o número de protocolo para consultar.');
+    if (!searchTerm.trim()) {
+      setError('Informe CPF, e-mail ou número de protocolo para consultar.');
       setResult(null);
       return;
     }
 
-    if (cpf && cpf.length !== 11) {
-      setError('O CPF deve ter 11 números.');
+    const record = findSolicitacao(searchTerm);
+
+    if (!record) {
+      setError('Nenhuma solicitação encontrada com os dados informados.');
       setResult(null);
       return;
     }
 
     setError('');
-    setResult({
-      protocolo: protocolo || 'ARCA-2026-0001',
-      tipo: 'Solicitação de castração',
-      status: 'Em triagem',
-      data: 'Cadastro recebido',
-      proximaEtapa: 'Aguardar contato da equipe responsável.',
-    });
+    setResult(record);
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
-      {error && (
-        <div className="mb-4">
-          <AlertBox type="warning" title="Verifique os dados">
-            {error}
-          </AlertBox>
-        </div>
-      )}
+    <div className="row g-4">
+      <div className="col-lg-5">
+        <form className="arca-card" onSubmit={handleSubmit}>
+          <h2 className="fw-bold mb-2">Consultar solicitação</h2>
+          <p className="text-muted mb-4">
+            Busque pelo protocolo gerado no cadastro, CPF do tutor ou e-mail informado.
+          </p>
 
-      <div className="row">
-        <div className="col-md-6">
-          <FormInput
-            label="CPF do tutor"
-            name="cpf"
-            placeholder="Somente números"
-            helper="Informe o CPF com 11 números."
-          />
-        </div>
+          {error && (
+            <div className="mb-4">
+              <AlertBox type="warning" title="Não encontramos o cadastro">
+                {error}
+              </AlertBox>
+            </div>
+          )}
 
-        <div className="col-md-6">
           <FormInput
-            label="Número de protocolo"
-            name="protocolo"
+            label="CPF, e-mail ou protocolo"
+            name="consulta"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
             placeholder="Ex.: ARCA-2026-0001"
+            required
           />
-        </div>
+
+          <button className="arca-primary-btn w-100 justify-content-center" type="submit">
+            Consultar cadastro
+          </button>
+
+          <div className="mt-4 p-3 rounded-4" style={{ background: '#f8fafc' }}>
+            <strong className="d-block mb-1">Protocolo de demonstração</strong>
+            <span className="text-muted small">Use ARCA-2026-0001 para testar a consulta sem cadastrar um novo tutor.</span>
+          </div>
+        </form>
       </div>
 
-      <div className="d-flex justify-content-end">
-        <button type="submit" className="arca-primary-btn px-5">
-          Consultar cadastro
-        </button>
-      </div>
+      <div className="col-lg-7">
+        {result ? (
+          <div className="arca-result-card">
+            <div className="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+              <div>
+                <span className="text-muted small fw-bold text-uppercase">Protocolo</span>
+                <h2 className="fw-bold mb-1">{result.protocolo}</h2>
+                <p className="text-muted mb-0">Cadastro realizado em {formatDate(result.criadoEm)}</p>
+              </div>
+              <StatusBadge status={result.status} />
+            </div>
 
-      {result && (
-        <div className="arca-result-card mt-4">
-          <div className="d-flex justify-content-between align-items-start gap-3 mb-3">
+            <div className="row g-3 mb-4">
+              <div className="col-md-6">
+                <div className="p-3 rounded-4 border h-100">
+                  <span className="text-muted small fw-bold">Tutor</span>
+                  <p className="mb-0 fw-bold">{result.nomeCompleto}</p>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="p-3 rounded-4 border h-100">
+                  <span className="text-muted small fw-bold">Bairro</span>
+                  <p className="mb-0 fw-bold">{result.bairro || '-'}</p>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="p-3 rounded-4 border h-100">
+                  <span className="text-muted small fw-bold">Serviço</span>
+                  <p className="mb-0 fw-bold">{result.servicoLabel || '-'}</p>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="p-3 rounded-4 border h-100">
+                  <span className="text-muted small fw-bold">Animal</span>
+                  <p className="mb-0 fw-bold">
+                    {result.quantidadeAnimais || '1'} · {result.especieLabel || result.especie || '-'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <AlertBox type="info" title="Próxima etapa">
+              {getStatusNextStep(result.status)}
+            </AlertBox>
+
+            <div className="mt-4">
+              <h3 className="fw-bold h5 mb-3">Linha do tempo da solicitação</h3>
+              <div className="d-grid gap-2">
+                {statusSolicitacao.map((status, index) => {
+                  const currentIndex = statusSolicitacao.indexOf(result.status);
+                  const isDone = index <= currentIndex;
+
+                  return (
+                    <div
+                      key={status}
+                      className="d-flex align-items-center gap-3 p-3 rounded-4 border"
+                      style={{ background: isDone ? '#f0fdf4' : '#f8fafc' }}
+                    >
+                      <span
+                        className="d-inline-flex align-items-center justify-content-center rounded-circle fw-bold"
+                        style={{
+                          width: 34,
+                          height: 34,
+                          background: isDone ? 'var(--arca-green)' : '#e5e7eb',
+                          color: isDone ? '#0e2a18' : '#64748b',
+                        }}
+                      >
+                        {index + 1}
+                      </span>
+                      <span className={isDone ? 'fw-bold' : 'text-muted'}>{status}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="arca-card h-100 d-flex flex-column justify-content-center text-center">
+            <h2 className="fw-bold">Acompanhe seu atendimento</h2>
+            <p className="text-muted mb-4">
+              Após preencher o cadastro, o sistema gera um protocolo para acompanhar a triagem, pendências e possível agendamento.
+            </p>
             <div>
-              <span className="text-muted d-block">Protocolo</span>
-              <strong>{result.protocolo}</strong>
-            </div>
-
-            <StatusBadge status={result.status} />
-          </div>
-
-          <div className="row g-3">
-            <div className="col-md-4">
-              <span className="text-muted d-block">Tipo</span>
-              <strong>{result.tipo}</strong>
-            </div>
-
-            <div className="col-md-4">
-              <span className="text-muted d-block">Situação</span>
-              <strong>{result.data}</strong>
-            </div>
-
-            <div className="col-md-4">
-              <span className="text-muted d-block">Próxima etapa</span>
-              <strong>{result.proximaEtapa}</strong>
+              <Link className="arca-secondary-btn" href="/registro">
+                Ainda não tenho cadastro
+              </Link>
             </div>
           </div>
-        </div>
-      )}
-    </form>
+        )}
+      </div>
+    </div>
   );
 }

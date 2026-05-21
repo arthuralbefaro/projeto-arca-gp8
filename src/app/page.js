@@ -1,20 +1,45 @@
 import Link from 'next/link';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import HeroSection from '@/components/sections/HeroSection';
+import AlertBox from '@/components/ui/AlertBox';
+import { avisosImportantes, etapasPrograma, prioridadesPrograma } from '@/lib/constants';
 import {
-  ClipboardCheck,
-  PhoneCall,
-  FileText,
-  HeartPulse,
   AlertCircle,
   CheckCircle2,
+  ClipboardCheck,
+  FileText,
+  HeartPulse,
+  PawPrint,
+  PhoneCall,
+  SearchCheck,
 } from 'lucide-react';
-import {
-  avisosImportantes,
-  etapasPrograma,
-  prioridadesPrograma,
-} from '@/lib/constants';
+
+const quickActions = [
+  {
+    title: 'Cadastrar tutor',
+    description: 'Crie o cadastro e gere um protocolo para acompanhar a triagem.',
+    href: '/registro',
+    icon: ClipboardCheck,
+  },
+  {
+    title: 'Solicitar castração',
+    description: 'Informe os dados do tutor e do animal para análise da equipe.',
+    href: '/servicos/castracao',
+    icon: PawPrint,
+  },
+  {
+    title: 'Consultar protocolo',
+    description: 'Acompanhe status, pendências e próxima etapa da solicitação.',
+    href: '/consulta',
+    icon: SearchCheck,
+  },
+  {
+    title: 'Ver documentos',
+    description: 'Confira o que pode ser solicitado durante a validação.',
+    href: '/documentos',
+    icon: FileText,
+  },
+];
 
 export default function Home() {
   return (
@@ -22,151 +47,133 @@ export default function Home() {
       <Header />
 
       <main>
-        <HeroSection />
-
-        <section className="arca-section">
+        <section className="arca-hero-shell">
           <div className="arca-container">
-            <div className="mb-5">
-              <h2 className="arca-section-title">Atendimento do Programa ARCA</h2>
-
-              <p className="arca-section-subtitle">
-                O sistema permite o cadastro de tutores interessados nos serviços
-                do Programa ARCA, com foco em castração, triagem e acompanhamento
-                de solicitações.
-              </p>
-            </div>
-
-            <div className="row g-4">
-              <div className="col-md-6 col-lg-3">
-                <div className="arca-feature-card">
-                  <div className="arca-feature-icon">
-                    <ClipboardCheck size={24} />
-                  </div>
-
-                  <h3 className="h5 fw-bold">Cadastrar tutor</h3>
-
-                  <p className="mb-0 text-muted">
-                    Crie seu cadastro para iniciar o atendimento no programa.
-                  </p>
-                </div>
+            <div className="arca-hero-card">
+              <div className="arca-hero-top">
+                <span className="fw-bold">Prefeitura Municipal da Serra</span>
+                <span>Programa de atendimento animal</span>
               </div>
 
-              <div className="col-md-6 col-lg-3">
-                <div className="arca-feature-card">
-                  <div className="arca-feature-icon">
-                    <HeartPulse size={24} />
-                  </div>
+              <div className="arca-hero-content">
+                <span className="arca-kicker">
+                  <HeartPulse size={18} />
+                  Cadastro, triagem e acompanhamento
+                </span>
 
-                  <h3 className="h5 fw-bold">Solicitar atendimento</h3>
+                <h1 className="arca-title">Cadastro para castração e atendimento animal na Serra</h1>
 
-                  <p className="mb-0 text-muted">
-                    Informe seus dados para que a solicitação seja analisada.
-                  </p>
+                <p className="arca-text mt-4">
+                  O sistema permite que tutores registrem solicitações, recebam um protocolo e acompanhem a análise da equipe responsável pelo Programa ARCA.
+                </p>
+
+                <div className="arca-actions">
+                  <Link className="arca-primary-btn" href="/registro">
+                    <ClipboardCheck size={18} />
+                    Cadastrar tutor
+                  </Link>
+                  <Link className="arca-secondary-btn" href="/consulta">
+                    <SearchCheck size={18} />
+                    Consultar protocolo
+                  </Link>
                 </div>
-              </div>
 
-              <div className="col-md-6 col-lg-3">
-                <div className="arca-feature-card">
-                  <div className="arca-feature-icon">
-                    <PhoneCall size={24} />
-                  </div>
-
-                  <h3 className="h5 fw-bold">Acompanhar contato</h3>
-
-                  <p className="mb-0 text-muted">
-                    A equipe poderá orientar o tutor sobre documentos e próximos passos.
-                  </p>
-                </div>
-              </div>
-
-              <div className="col-md-6 col-lg-3">
-                <div className="arca-feature-card">
-                  <div className="arca-feature-icon">
-                    <FileText size={24} />
-                  </div>
-
-                  <h3 className="h5 fw-bold">Entender regras</h3>
-
-                  <p className="mb-0 text-muted">
-                    Veja critérios, prioridades e informações importantes do programa.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="arca-actions mt-5">
-              <Link href="/registro" className="arca-primary-btn">
-                Cadastrar tutor
-              </Link>
-
-              <Link href="/login" className="arca-secondary-btn">
-                Acessar minha conta
-              </Link>
-
-              <a href="#como-funciona" className="arca-secondary-btn">
-                Entender como funciona
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <section id="avisos" className="arca-section pt-0">
-          <div className="arca-container">
-            <div className="arca-card">
-              <div className="row g-4 align-items-center">
-                <div className="col-lg-5">
-                  <div className="d-flex align-items-center gap-3 mb-3">
-                    <div className="arca-feature-icon mb-0">
-                      <AlertCircle size={24} />
+                <div className="row g-3 mt-4">
+                  <div className="col-md-4">
+                    <div className="p-3 rounded-4 bg-white bg-opacity-50 h-100">
+                      <strong className="d-block h4 mb-0">01</strong>
+                      <span className="fw-bold">Cadastro do tutor</span>
                     </div>
-
-                    <h2 className="arca-section-title h3 mb-0">
-                      Avisos importantes
-                    </h2>
                   </div>
-
-                  <p className="text-muted mb-0">
-                    Antes de realizar o cadastro, leia as informações principais
-                    sobre a análise das solicitações.
-                  </p>
+                  <div className="col-md-4">
+                    <div className="p-3 rounded-4 bg-white bg-opacity-50 h-100">
+                      <strong className="d-block h4 mb-0">02</strong>
+                      <span className="fw-bold">Triagem da equipe</span>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="p-3 rounded-4 bg-white bg-opacity-50 h-100">
+                      <strong className="d-block h4 mb-0">03</strong>
+                      <span className="fw-bold">Status por protocolo</span>
+                    </div>
+                  </div>
                 </div>
+              </div>
 
-                <div className="col-lg-7">
-                  <div className="d-grid gap-3">
-                    {avisosImportantes.map((aviso) => (
-                      <div className="d-flex gap-2" key={aviso}>
-                        <CheckCircle2 className="text-success flex-shrink-0" size={21} />
-                        <span>{aviso}</span>
+              <div className="arca-pet-visual" aria-hidden="true" />
+            </div>
+          </div>
+        </section>
+
+        <section className="arca-section pt-0">
+          <div className="arca-container">
+            <div className="row g-4">
+              {quickActions.map((action) => {
+                const Icon = action.icon;
+
+                return (
+                  <div className="col-md-6 col-xl-3" key={action.href}>
+                    <Link className="text-decoration-none" href={action.href}>
+                      <div className="arca-feature-card">
+                        <div className="arca-feature-icon">
+                          <Icon size={24} />
+                        </div>
+                        <h2 className="h5 fw-bold">{action.title}</h2>
+                        <p className="text-muted mb-0">{action.description}</p>
                       </div>
-                    ))}
+                    </Link>
                   </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        <section className="arca-section pt-0">
+          <div className="arca-container">
+            <div className="row g-4 align-items-start">
+              <div className="col-lg-5">
+                <span className="arca-kicker">
+                  <AlertCircle size={18} />
+                  Antes de começar
+                </span>
+                <h2 className="arca-section-title">Avisos importantes</h2>
+                <p className="arca-section-subtitle">
+                  O cadastro organiza a demanda e facilita a comunicação com a equipe, mas não significa aprovação automática ou vaga imediata.
+                </p>
+              </div>
+              <div className="col-lg-7">
+                <div className="d-grid gap-3">
+                  {avisosImportantes.map((aviso) => (
+                    <AlertBox key={aviso} type="info">
+                      {aviso}
+                    </AlertBox>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="como-funciona" className="arca-section pt-0">
+        <section className="arca-section pt-0">
           <div className="arca-container">
-            <div className="mb-5">
+            <div className="text-center mx-auto mb-5" style={{ maxWidth: 760 }}>
+              <span className="arca-kicker">
+                <PhoneCall size={18} />
+                Jornada do atendimento
+              </span>
               <h2 className="arca-section-title">Como funciona o atendimento</h2>
-
-              <p className="arca-section-subtitle">
-                O processo começa pelo cadastro e segue para análise, contato da
-                equipe responsável, orientação e possível agendamento.
+              <p className="arca-section-subtitle mx-auto">
+                O processo começa pelo cadastro e segue para análise, validação de informações, contato da equipe e possível agendamento.
               </p>
             </div>
 
             <div className="row g-4">
               {etapasPrograma.map((etapa) => (
                 <div className="col-md-6 col-lg-4" key={etapa.number}>
-                  <div className="arca-feature-card">
-                    <span className="d-block fs-2 fw-bold text-success mb-3">
-                      {etapa.number}
-                    </span>
-
-                    <h3 className="h5 fw-bold">{etapa.title}</h3>
-
+                  <div className="arca-card h-100">
+                    <span className="fw-bold text-muted">{etapa.number}</span>
+                    <h3 className="h5 fw-bold mt-2">{etapa.title}</h3>
                     <p className="text-muted mb-0">{etapa.description}</p>
                   </div>
                 </div>
@@ -175,30 +182,30 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="prioridades" className="arca-section pt-0">
+        <section className="arca-section pt-0">
           <div className="arca-container">
             <div className="arca-card">
-              <div className="row align-items-center g-4">
-                <div className="col-lg-7">
-                  <h2 className="arca-section-title">
+              <div className="row g-4 align-items-center">
+                <div className="col-lg-5">
+                  <span className="arca-kicker">
+                    <CheckCircle2 size={18} />
                     Critérios de prioridade
-                  </h2>
-
-                  <p className="text-muted mb-0">
-                    A seleção considera critérios sociais, proteção animal,
-                    disponibilidade de vagas e fatores relacionados à saúde pública.
+                  </span>
+                  <h2 className="arca-section-title">Quem pode ter prioridade?</h2>
+                  <p className="arca-section-subtitle mb-0">
+                    A seleção considera critérios sociais, proteção animal, disponibilidade de vagas e fatores relacionados à saúde pública.
                   </p>
                 </div>
-
-                <div className="col-lg-5">
-                  <div className="p-4 rounded-4" style={{ background: 'var(--arca-green-soft)' }}>
-                    <h3 className="h5 fw-bold mb-3">Prioridades consideradas</h3>
-
-                    <ul className="mb-0">
-                      {prioridadesPrograma.map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
+                <div className="col-lg-7">
+                  <div className="row g-3">
+                    {prioridadesPrograma.map((item) => (
+                      <div className="col-md-6" key={item}>
+                        <div className="d-flex gap-3 p-3 rounded-4 border h-100">
+                          <CheckCircle2 color="var(--arca-green-dark)" />
+                          <span className="fw-bold">{item}</span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>

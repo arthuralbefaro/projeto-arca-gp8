@@ -13,23 +13,21 @@ export default function CastracaoPage() {
     <div className="arca-page">
       <Header />
 
-      <main className="py-5">
+      <main className="arca-section">
         <div className="arca-container">
           <PageTitle
-            badge="Serviço digital"
+            badge="Serviço"
             title="Solicitação de castração"
-            subtitle="Preencha os dados do tutor e do animal para iniciar uma solicitação de atendimento no Programa ARCA."
+            subtitle="Cadastre a solicitação de castração do animal e gere um protocolo para acompanhamento."
           />
 
           <div className="mb-4">
-            <AlertBox type="info" title="Atenção">
+            <AlertBox type="warning" title="Atenção">
               O envio do formulário não garante vaga imediata. A solicitação será analisada pela equipe responsável.
             </AlertBox>
           </div>
 
-          <div className="arca-register-card">
-            <CastracaoForm />
-          </div>
+          <CastracaoForm />
         </div>
       </main>
 

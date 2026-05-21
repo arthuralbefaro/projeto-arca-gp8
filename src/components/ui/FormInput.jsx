@@ -14,12 +14,11 @@ export default function FormInput({
 
   return (
     <div className="mb-3">
-      <label
-        htmlFor={inputId}
-        className={`form-label ${required ? 'required' : ''}`}
-      >
-        {label}
-      </label>
+      {label && (
+        <label className={`form-label ${required ? 'required' : ''}`} htmlFor={inputId}>
+          {label}
+        </label>
+      )}
 
       {as === 'select' ? (
         <select
@@ -32,13 +31,23 @@ export default function FormInput({
         >
           {children}
         </select>
+      ) : as === 'textarea' ? (
+        <textarea
+          id={inputId}
+          name={name}
+          className="form-control"
+          placeholder={placeholder}
+          required={required}
+          aria-describedby={helperId}
+          {...props}
+        />
       ) : (
         <input
           id={inputId}
           name={name}
           type={type}
-          placeholder={placeholder}
           className="form-control"
+          placeholder={placeholder}
           required={required}
           aria-describedby={helperId}
           {...props}

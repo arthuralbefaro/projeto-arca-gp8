@@ -12,17 +12,15 @@ export default function ConsultaPage() {
     <div className="arca-page">
       <Header />
 
-      <main className="py-5">
+      <main className="arca-section">
         <div className="arca-container">
           <PageTitle
             badge="Acompanhamento"
             title="Consulta de cadastro"
-            subtitle="Consulte visualmente o andamento de uma solicitação usando CPF ou protocolo."
+            subtitle="Consulte a situação da solicitação usando protocolo, CPF ou e-mail informado no cadastro."
           />
 
-          <div className="arca-register-card">
-            <ConsultaForm />
-          </div>
+          <ConsultaForm />
         </div>
       </main>
 

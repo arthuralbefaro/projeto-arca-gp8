@@ -1,40 +1,30 @@
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import RegisterTutorForm from '@/components/forms/RegisterTutorForm';
+import PageTitle from '@/components/ui/PageTitle';
 
 export const metadata = {
-    title: 'Registro de Tutor | Programa ARCA',
+  title: 'Registro de Tutor | Programa ARCA',
 };
 
 export default function RegisterPage() {
-    return (
-        <div className="arca-page">
-            <Header />
+  return (
+    <div className="arca-page">
+      <Header />
 
-            <main className="py-5">
-                <div className="arca-container">
-                    <div className="row justify-content-center">
-                        <div className="col-lg-9">
-                            <div className="mb-4 text-center">
-                                <h1 className="arca-section-title">
-                                    Registro do Tutor
-                                </h1>
+      <main className="arca-section">
+        <div className="arca-container">
+          <PageTitle
+            badge="Cadastro público"
+            title="Registro do tutor"
+            subtitle="Preencha os dados do responsável, endereço, perfil de prioridade e informações iniciais dos animais. Ao final, o sistema gera um protocolo de acompanhamento."
+          />
 
-                                <p className="arca-section-subtitle mx-auto">
-                                    Preencha seus dados para criar o cadastro no Programa ARCA.
-                                    O backend em Java será responsável por validar e salvar essas informações futuramente.
-                                </p>
-                            </div>
-
-                            <div className="arca-register-card">
-                                <RegisterTutorForm />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
-
-            <Footer />
+          <RegisterTutorForm />
         </div>
-    );
+      </main>
+
+      <Footer />
+    </div>
+  );
 }

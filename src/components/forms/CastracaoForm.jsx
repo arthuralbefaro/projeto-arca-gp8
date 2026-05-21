@@ -1,99 +1,120 @@
-"use client"
+'use client';
 
-import { useState } from "react";
-import FormInput from "../ui/FormInput";
-import FormSection from "../ui/FormSection";
-import AlertBox from "../ui/AlertBox";
-import { formatCpf, isValidCpf, onlyCpfDigits } from "@/lib/cpf";
+import { useState } from 'react';
+import Link from 'next/link';
+import AlertBox from '@/components/ui/AlertBox';
+import FormInput from '@/components/ui/FormInput';
+import FormSection from '@/components/ui/FormSection';
+import StatusBadge from '@/components/ui/StatusBadge';
+import { bairrosSerra, especiesAnimais, tiposSolicitante } from '@/lib/constants';
+import { formatCpf, isValidCpf, onlyCpfDigits } from '@/lib/cpf';
+import { createSolicitacao, formatPhone, onlyDigits } from '@/lib/arcaStorage';
+
+function findLabel(options, value) {
+  return options.find((option) => option.value === value)?.label || value;
+}
+
+const initialForm = {
+  nomeCompleto: '',
+  cpf: '',
+  telefone: '',
+  email: '',
+  bairro: '',
+  tipoSolicitante: 'MUNICIPE',
+  quantidadeAnimais: '1',
+  especie: '',
+  sexoAnimal: '',
+  porteAnimal: '',
+  vacinadoRaiva: '',
+  sintomas: '',
+  observacoes: '',
+  termo: false,
+};
 
 export default function CastracaoForm() {
+  const [form, setForm] = useState(initialForm);
+  const [message, setMessage] = useState(null);
+  const [createdRecord, setCreatedRecord] = useState(null);
 
-    const [message, setMessage] = useState(null);
-    const [cpf, setCpf] = useState("");
-    const [cpfError, setCpfError] = useState("");
+  function updateField(name, value) {
+    setForm((current) => ({ ...current, [name]: value }));
+    setMessage(null);
+  }
 
-    function handleCpfChange(event) {
-      const formattedCpf = formatCpf(event.target.value);
+  function handleSubmit(event) {
+    event.preventDefault();
 
-      setCpf(formattedCpf);
-      setMessage(null);
-
-      if (onlyCpfDigits(formattedCpf).length === 11 && !isValidCpf(formattedCpf)) {
-        setCpfError("CPF inválido.");
-        return;
-      }
-
-      setCpfError("");
+    if (!isValidCpf(form.cpf)) {
+      setMessage({ type: 'warning', title: 'CPF inválido', text: 'Digite um CPF válido para gerar o protocolo.' });
+      return;
     }
 
-    function handleSubmit(event) {
-        event.preventDefault();
-
-        const formData = new FormData(event.currentTarget);
-        const cpfOnlyNumbers = onlyCpfDigits(cpf);
-        const telefone = String(formData.get("telefone") || "").trim();
-        const termo = formData.get("termo");
-
-        if (!isValidCpf(cpf)) {
-          setCpfError("Digite um CPF válido.");
-
-          setMessage({
-            type: "warning",
-            title: "CPF inválido",
-            text: "Informe um CPF válido para continuar",
-          });
-
-          return;
-        }
-        
-
-        if (telefone.length < 10) {
-            setMessage({
-                type: "warning",
-                title: "Telefone inválido",
-                text: "Informe um telefone válido para contato da equipe responsável.",
-            });
-            return;
-        }
-
-        if (!termo) {
-            setMessage({
-                type: "warning",
-                title: "Confirmação obrigatória",
-                text: "Confirme que leu as informações antes de enviar.",
-            })
-            return;
-        }
-
-        const solicitacaoCastracao = {
-          nomeTutor: formData.get("nomeTutor"),
-          cpf: cpfOnlyNumbers,
-          telefone: formData.get("telefone"),
-          email: formData.get("email"),
-          nomeAnimal: formData.get("nomeAnimal"),
-          especie: formData.get("especie"),
-          raca: formData.get("raca"),
-          sexo: formData.get("sexo"),
-          porte: formData.get("porte"),
-          idade: formData.get("idade"),
-          localizacao: formData.get("localizacao"),
-          vacinado: formData.get("vacinado"),
-          doenca: formData.get("doenca"),
-          gestanteOuCio: formData.get("gestanteOuCio"),
-          observacoes: formData.get("observacoes"),
-        };
-
-        console.log("Solicitação de castração:", solicitacaoCastracao);
-
-        setMessage({
-            type: "success",
-            title: "Formulário validado",
-            text: "Os dados foram preenchidos corretamente. (ainda tá sem backend)",
-        });
+    if (onlyDigits(form.telefone).length < 10) {
+      setMessage({ type: 'warning', title: 'Telefone inválido', text: 'Informe um telefone válido para contato.' });
+      return;
     }
 
+    if (!form.termo) {
+      setMessage({
+        type: 'warning',
+        title: 'Confirmação obrigatória',
+        text: 'Confirme que leu as informações e entende que haverá triagem.',
+      });
+      return;
+    }
+
+    const solicitacao = createSolicitacao({
+      nomeCompleto: form.nomeCompleto.trim(),
+      cpf: onlyCpfDigits(form.cpf),
+      telefone: form.telefone,
+      email: form.email.trim(),
+      bairro: form.bairro,
+      tipoSolicitante: form.tipoSolicitante,
+      tipoSolicitanteLabel: findLabel(tiposSolicitante, form.tipoSolicitante),
+      servicoSolicitado: 'CASTRACAO',
+      servicoLabel: 'Solicitação de castração',
+      quantidadeAnimais: form.quantidadeAnimais,
+      especie: form.especie,
+      especieLabel: findLabel(especiesAnimais, form.especie),
+      sexoAnimal: form.sexoAnimal,
+      porteAnimal: form.porteAnimal,
+      vacinadoRaiva: form.vacinadoRaiva,
+      sintomas: form.sintomas,
+      observacoes: form.observacoes.trim(),
+    });
+
+    setCreatedRecord(solicitacao);
+    setForm(initialForm);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  if (createdRecord) {
     return (
-    <form onSubmit={handleSubmit} noValidate>
+      <div className="arca-register-card">
+        <AlertBox type="success" title="Solicitação de castração enviada">
+          A solicitação foi salva no protótipo e já aparece no painel administrativo.
+        </AlertBox>
+
+        <div className="text-center my-4 p-4 rounded-4" style={{ background: 'var(--arca-green-soft)' }}>
+          <span className="text-uppercase fw-bold text-muted small d-block mb-2">Protocolo</span>
+          <h2 className="fw-bold mb-2">{createdRecord.protocolo}</h2>
+          <StatusBadge status={createdRecord.status} />
+        </div>
+
+        <div className="d-flex flex-wrap justify-content-center gap-2">
+          <Link className="arca-primary-btn" href="/consulta">
+            Consultar status
+          </Link>
+          <button type="button" className="arca-secondary-btn" onClick={() => setCreatedRecord(null)}>
+            Nova solicitação
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <form className="arca-register-card" onSubmit={handleSubmit}>
       {message && (
         <div className="mb-4">
           <AlertBox type={message.type} title={message.title}>
@@ -104,167 +125,187 @@ export default function CastracaoForm() {
 
       <FormSection
         title="Dados do tutor"
-        description="Informe os dados do responsável pelo animal."
+        description="Informe os dados básicos para contato e identificação da solicitação."
       >
-        <div className="row">
-          <div className="col-md-8">
-            <FormInput
-              label="Nome completo"
-              name="nomeTutor"
-              placeholder="Ex.: Maria Silva"
-              required
-            />
-          </div>
-
-          <div className="col-md-4">
-            <FormInput 
-              label="CPF"
-              name="cpf"
-              value={cpf}
-              onChange={handleCpfChange}
-              placeholder="000.000.000-00"
-              maxLength={14}
-              required
-              helper={cpfError || "Digite apenas números. O sistema formatará automaticamente."}
-            />
-
-            { cpfError && (
-              <small className="text-danger d-block mt-1">
-                {cpfError}
-              </small>
-            )}
-          </div>
-
+        <div className="row g-3">
           <div className="col-md-6">
             <FormInput
-              label="Telefone/WhatsApp"
+              label="Nome completo"
+              name="nomeCompleto"
+              value={form.nomeCompleto}
+              onChange={(event) => updateField('nomeCompleto', event.target.value)}
+              required
+            />
+          </div>
+          <div className="col-md-3">
+            <FormInput
+              label="CPF"
+              name="cpf"
+              value={form.cpf}
+              onChange={(event) => updateField('cpf', formatCpf(event.target.value))}
+              placeholder="000.000.000-00"
+              required
+            />
+          </div>
+          <div className="col-md-3">
+            <FormInput
+              label="Telefone"
               name="telefone"
+              value={form.telefone}
+              onChange={(event) => updateField('telefone', formatPhone(event.target.value))}
               placeholder="(27) 99999-9999"
               required
             />
           </div>
-
-          <div className="col-md-6">
+          <div className="col-md-5">
             <FormInput
               label="E-mail"
               name="email"
               type="email"
-              placeholder="seuemail@email.com"
+              value={form.email}
+              onChange={(event) => updateField('email', event.target.value)}
               required
             />
+          </div>
+          <div className="col-md-4">
+            <FormInput
+              label="Bairro"
+              name="bairro"
+              as="select"
+              value={form.bairro}
+              onChange={(event) => updateField('bairro', event.target.value)}
+              required
+            >
+              <option value="">Selecione</option>
+              {bairrosSerra.map((bairro) => (
+                <option key={bairro} value={bairro}>
+                  {bairro}
+                </option>
+              ))}
+            </FormInput>
+          </div>
+          <div className="col-md-3">
+            <FormInput
+              label="Perfil"
+              name="tipoSolicitante"
+              as="select"
+              value={form.tipoSolicitante}
+              onChange={(event) => updateField('tipoSolicitante', event.target.value)}
+              required
+            >
+              {tiposSolicitante.map((tipo) => (
+                <option key={tipo.value} value={tipo.value}>
+                  {tipo.label}
+                </option>
+              ))}
+            </FormInput>
           </div>
         </div>
       </FormSection>
 
       <FormSection
         title="Dados do animal"
-        description="Informe as características principais do cão ou gato."
+        description="Essas informações ajudam a equipe a priorizar e orientar o atendimento."
       >
-        <div className="row">
-          <div className="col-md-6">
+        <div className="row g-3">
+          <div className="col-md-3">
             <FormInput
-              label="Nome do animal"
-              name="nomeAnimal"
-              placeholder="Ex.: Mel"
+              label="Quantidade"
+              name="quantidadeAnimais"
+              type="number"
+              min="1"
+              max="20"
+              value={form.quantidadeAnimais}
+              onChange={(event) => updateField('quantidadeAnimais', event.target.value)}
               required
             />
           </div>
-
-          <div className="col-md-6">
-            <FormInput label="Espécie" name="especie" as="select" required>
+          <div className="col-md-3">
+            <FormInput
+              label="Espécie"
+              name="especie"
+              as="select"
+              value={form.especie}
+              onChange={(event) => updateField('especie', event.target.value)}
+              required
+            >
               <option value="">Selecione</option>
-              <option value="Cachorro">Cachorro</option>
-              <option value="Gato">Gato</option>
+              {especiesAnimais.map((especie) => (
+                <option key={especie.value} value={especie.value}>
+                  {especie.label}
+                </option>
+              ))}
             </FormInput>
           </div>
-
+          <div className="col-md-3">
+            <FormInput
+              label="Sexo"
+              name="sexoAnimal"
+              as="select"
+              value={form.sexoAnimal}
+              onChange={(event) => updateField('sexoAnimal', event.target.value)}
+              required
+            >
+              <option value="">Selecione</option>
+              <option>Macho</option>
+              <option>Fêmea</option>
+              <option>Mais de um animal</option>
+              <option>Não sei informar</option>
+            </FormInput>
+          </div>
+          <div className="col-md-3">
+            <FormInput
+              label="Porte"
+              name="porteAnimal"
+              as="select"
+              value={form.porteAnimal}
+              onChange={(event) => updateField('porteAnimal', event.target.value)}
+              required
+            >
+              <option value="">Selecione</option>
+              <option>Pequeno</option>
+              <option>Médio</option>
+              <option>Grande</option>
+              <option>Não sei informar</option>
+            </FormInput>
+          </div>
           <div className="col-md-4">
             <FormInput
-              label="Raça"
-              name="raca"
-              placeholder="Ex.: Shih-tzu"
+              label="Vacina antirrábica em dia?"
+              name="vacinadoRaiva"
+              as="select"
+              value={form.vacinadoRaiva}
+              onChange={(event) => updateField('vacinadoRaiva', event.target.value)}
               required
-            />
-          </div>
-
-          <div className="col-md-4">
-            <FormInput label="Sexo" name="sexo" as="select" required>
+            >
               <option value="">Selecione</option>
-              <option value="Macho">Macho</option>
-              <option value="Fêmea">Fêmea</option>
+              <option>Sim</option>
+              <option>Não</option>
+              <option>Não sei informar</option>
             </FormInput>
           </div>
-
           <div className="col-md-4">
-            <FormInput label="Porte" name="porte" as="select" required>
-              <option value="">Selecione</option>
-              <option value="Pequeno">Pequeno</option>
-              <option value="Médio">Médio</option>
-              <option value="Grande">Grande</option>
-            </FormInput>
-          </div>
-
-          <div className="col-md-6">
             <FormInput
-              label="Idade aproximada"
-              name="idade"
-              placeholder="Ex.: 2 anos"
+              label="Animal com sintomas?"
+              name="sintomas"
+              as="select"
+              value={form.sintomas}
+              onChange={(event) => updateField('sintomas', event.target.value)}
               required
-            />
+            >
+              <option value="">Selecione</option>
+              <option>Sim</option>
+              <option>Não</option>
+              <option>Não sei informar</option>
+            </FormInput>
           </div>
-
-          <div className="col-md-6">
+          <div className="col-md-4">
             <FormInput
-              label="Bairro ou localização"
-              name="localizacao"
-              placeholder="Ex.: Laranjeiras"
-              required
-            />
-          </div>
-        </div>
-      </FormSection>
-
-      <FormSection
-        title="Informações de saúde"
-        description="Esses dados ajudam a equipe a avaliar a solicitação."
-      >
-        <div className="row">
-          <div className="col-md-4">
-            <FormInput label="Vacinado contra raiva?" name="vacinado" as="select" required>
-              <option value="">Selecione</option>
-              <option value="Sim">Sim</option>
-              <option value="Não">Não</option>
-            </FormInput>
-          </div>
-
-          <div className="col-md-4">
-            <FormInput label="Possui alguma doença?" name="doenca" as="select" required>
-              <option value="">Selecione</option>
-              <option value="Sim">Sim</option>
-              <option value="Não">Não</option>
-            </FormInput>
-          </div>
-
-          <div className="col-md-4">
-            <FormInput label="Está gestante ou no cio?" name="gestanteOuCio" as="select" required>
-              <option value="">Selecione</option>
-              <option value="Sim">Sim</option>
-              <option value="Não">Não</option>
-              <option value="Não se aplica">Não se aplica</option>
-            </FormInput>
-          </div>
-
-          <div className="col-12">
-            <label htmlFor="observacoes" className="form-label">
-              Observações
-            </label>
-
-            <textarea
-              id="observacoes"
+              label="Observações"
               name="observacoes"
-              className="form-control"
-              rows="4"
-              placeholder="Informe detalhes importantes sobre o animal."
+              value={form.observacoes}
+              onChange={(event) => updateField('observacoes', event.target.value)}
+              placeholder="Ex.: animal de rua, cio, risco, etc."
             />
           </div>
         </div>
@@ -276,9 +317,9 @@ export default function CastracaoForm() {
             className="form-check-input"
             type="checkbox"
             id="termo"
-            name="termo"
+            checked={form.termo}
+            onChange={(event) => updateField('termo', event.target.checked)}
           />
-
           <label className="form-check-label" htmlFor="termo">
             Declaro que li as informações e estou ciente de que a solicitação passará por triagem.
           </label>
