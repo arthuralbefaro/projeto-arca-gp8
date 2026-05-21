@@ -1,56 +1,67 @@
 import Link from 'next/link';
-import { Mail, PawPrint, Phone } from 'lucide-react';
+import { Mail, MapPin, PawPrint, Phone } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="arca-footer">
-      <div className="arca-container">
-        <div className="row g-4 align-items-center">
-          <div className="col-lg-5">
-            <div className="d-flex align-items-center gap-3">
-              <div className="arca-feature-icon mb-0">
-                <PawPrint size={24} />
+      <footer className="arca-footer">
+        <div className="arca-container">
+          <div className="arca-footer-grid">
+            <div>
+              <div className="arca-brand" style={{ marginBottom: 18 }}>
+              <span className="arca-brand-mark">
+                <PawPrint size={23} />
+              </span>
+
+                <span className="arca-brand-text">
+                <strong>Programa ARCA</strong>
+                <span>Prefeitura Municipal da Serra</span>
+              </span>
               </div>
-              <div>
-                <strong className="d-block">Programa ARCA</strong>
-                <span className="text-muted">Prefeitura Municipal da Serra</span>
+
+              <p>
+                Plataforma digital de apoio ao cadastro, triagem e acompanhamento
+                de solicitações relacionadas ao atendimento animal no município.
+              </p>
+            </div>
+
+            <div>
+              <h4>Navegação</h4>
+
+              <div className="arca-footer-links">
+                <Link href="/">Início</Link>
+                <Link href="/registro">Cadastro do tutor</Link>
+                <Link href="/servicos/castracao">Solicitar castração</Link>
+                <Link href="/consulta">Consultar protocolo</Link>
+                <Link href="/documentos">Documentos necessários</Link>
+              </div>
+            </div>
+
+            <div>
+              <h4>Atendimento</h4>
+
+              <div className="arca-footer-links">
+              <span>
+                <Phone size={16} /> Horário comercial
+              </span>
+
+                <span>
+                <Mail size={16} /> Secretaria responsável
+              </span>
+
+                <span>
+                <MapPin size={16} /> Serra/ES
+              </span>
+
+                <Link href="/admin/relatorios">Painel demo</Link>
               </div>
             </div>
           </div>
 
-          <div className="col-lg-4">
-            <div className="d-flex flex-column gap-2 text-muted small">
-              <span className="d-flex align-items-center gap-2">
-                <Phone size={16} /> Atendimento em horário comercial
-              </span>
-              <span className="d-flex align-items-center gap-2">
-                <Mail size={16} /> Secretaria responsável pelo programa
-              </span>
-            </div>
-          </div>
-
-          <div className="col-lg-3 text-lg-end">
-            <div className="d-flex flex-wrap gap-3 justify-content-lg-end">
-              <Link className="arca-small-link" href="/consulta">
-                Consulta
-              </Link>
-              <Link className="arca-small-link" href="/documentos">
-                Documentos
-              </Link>
-              <Link className="arca-small-link" href="/admin/relatorios">
-                Painel demo
-              </Link>
-            </div>
+          <div className="arca-footer-bottom">
+            <span>Programa ARCA — Protótipo front-end com dados simulados.</span>
+            <span>Projeto acadêmico | Grupo 8</span>
           </div>
         </div>
-
-        <hr />
-
-        <div className="d-flex flex-wrap justify-content-between gap-2 text-muted small">
-          <span>Programa ARCA - Serra/ES</span>
-          <span>Protótipo front-end com dados simulados no navegador.</span>
-        </div>
-      </div>
-    </footer>
+      </footer>
   );
 }

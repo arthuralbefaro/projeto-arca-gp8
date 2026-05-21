@@ -3,118 +3,99 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import {
-  BookOpen,
-  Building2,
-  ClipboardCheck,
-  Files,
-  Landmark,
+  FileText,
+  LogIn,
   Menu,
   PawPrint,
   Search,
-  UserRound,
-  Users,
+  ShieldCheck,
+  UserPlus,
   X,
 } from 'lucide-react';
+
+const navLinks = [
+  { label: 'Início', href: '/' },
+  { label: 'Como funciona', href: '/como-funciona' },
+  { label: 'Documentos', href: '/documentos' },
+  { label: 'Castração', href: '/servicos/castracao' },
+  { label: 'Consulta', href: '/consulta' },
+];
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const mainLinks = [
-    { label: 'Início', href: '/' },
-    { label: 'Como funciona', href: '/como-funciona' },
-    { label: 'Documentos', href: '/documentos' },
-    { label: 'Castração', href: '/servicos/castracao' },
-    { label: 'Consulta', href: '/consulta' },
-  ];
-
-  const categoryLinks = [
-    { label: 'Secretarias', href: '#', icon: Landmark },
-    { label: 'Cidadão', href: '#', icon: Users },
-    { label: 'Empreendedor', href: '#', icon: Building2 },
-    { label: 'Servidor', href: '#', icon: UserRound },
-    { label: 'Educação', href: '#', icon: BookOpen },
-    { label: 'Documentos', href: '/documentos', icon: Files },
-    { label: 'Castração', href: '/servicos/castracao', icon: PawPrint, highlight: true },
-    { label: 'Cadastro', href: '/registro', icon: ClipboardCheck, highlight: true },
-  ];
+  function closeMenu() {
+    setIsOpen(false);
+  }
 
   return (
-    <header className="pm-header">
-      <div className="pm-header-main">
-        <div className="arca-container pm-header-content">
-          <Link className="pm-logo" href="/" onClick={() => setIsOpen(false)}>
-            <span className="pm-logo-symbol">
-              <PawPrint size={23} />
-            </span>
-            <span className="pm-logo-text">
-              <span>Programa</span>
-              <strong>ARCA</strong>
-            </span>
+      <header className="arca-header">
+        <div className="arca-header-inner">
+          <Link href="/" className="arca-brand" onClick={closeMenu}>
+          <span className="arca-brand-mark">
+            <PawPrint size={23} />
+          </span>
+
+            <span className="arca-brand-text">
+            <strong>Programa ARCA</strong>
+            <span>Atendimento animal digital</span>
+          </span>
           </Link>
 
-          <nav className="pm-main-links" aria-label="Navegação principal">
-            {mainLinks.map((link) => (
-              <Link key={link.href} href={link.href}>
-                {link.label}
-              </Link>
+          <nav className="arca-nav" aria-label="Navegação principal">
+            {navLinks.map((link) => (
+                <Link href={link.href} key={link.href}>
+                  {link.label}
+                </Link>
             ))}
           </nav>
 
-          <div className="pm-header-actions">
-            <Link className="arca-primary-btn py-2 px-3 d-none d-md-inline-flex" href="/registro">
+          <div className="arca-header-actions">
+            <Link href="/registro" className="arca-btn arca-btn-primary">
+              <UserPlus size={18} />
               Cadastrar tutor
             </Link>
-            <button type="button" aria-label="Pesquisar">
-              <Search size={18} />
-            </button>
+
             <button
-              type="button"
-              aria-label="Abrir menu"
-              className="d-lg-none"
-              onClick={() => setIsOpen((current) => !current)}
+                type="button"
+                className="arca-menu-btn"
+                onClick={() => setIsOpen((current) => !current)}
+                aria-label={isOpen ? 'Fechar menu' : 'Abrir menu'}
             >
-              {isOpen ? <X size={20} /> : <Menu size={20} />}
+              {isOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
 
         {isOpen && (
-          <div className="pm-mobile-panel">
-            <div className="arca-container pm-mobile-links">
-              {mainLinks.map((link) => (
-                <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}>
-                  {link.label}
-                </Link>
+            <nav className="arca-mobile-menu" aria-label="Menu mobile">
+              {navLinks.map((link) => (
+                  <Link href={link.href} key={link.href} onClick={closeMenu}>
+                    {link.label}
+                  </Link>
               ))}
-              <Link href="/registro" onClick={() => setIsOpen(false)}>
-                Cadastro do tutor
+
+              <Link href="/registro" onClick={closeMenu}>
+                <UserPlus size={17} /> Cadastro do tutor
               </Link>
-              <Link href="/login" onClick={() => setIsOpen(false)}>
-                Acessar minha conta
+
+              <Link href="/consulta" onClick={closeMenu}>
+                <Search size={17} /> Consultar protocolo
               </Link>
-            </div>
-          </div>
+
+              <Link href="/documentos" onClick={closeMenu}>
+                <FileText size={17} /> Documentos necessários
+              </Link>
+
+              <Link href="/login" onClick={closeMenu}>
+                <LogIn size={17} /> Acessar conta
+              </Link>
+
+              <Link href="/admin/relatorios" onClick={closeMenu}>
+                <ShieldCheck size={17} /> Painel
+              </Link>
+            </nav>
         )}
-      </div>
-
-      <div className="pm-category-bar">
-        <div className="arca-container pm-category-nav">
-          {categoryLinks.map((link) => {
-            const Icon = link.icon;
-
-            return (
-              <Link
-                key={`${link.label}-${link.href}`}
-                className={`pm-category-link ${link.highlight ? 'pm-category-highlight' : ''}`}
-                href={link.href}
-              >
-                <Icon size={16} />
-                {link.label}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-    </header>
+      </header>
   );
 }
