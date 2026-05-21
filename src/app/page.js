@@ -162,7 +162,11 @@ export default function Home() {
 
               <div className="arca-hero-card">
                 <div className="arca-pet-visual">
-                  <PawPrint />
+                  <img
+                      src="/projeto-arca-gp8/logo-serra.jpg"
+                      alt="Prefeitura da Serra"
+                      className="arca-brand-logo"
+                  />
                 </div>
 
                 <div className="arca-floating-card one">

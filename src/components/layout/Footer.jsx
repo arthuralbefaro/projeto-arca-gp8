@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Mail, MapPin, PawPrint, Phone } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -9,7 +9,11 @@ export default function Footer() {
             <div>
               <div className="arca-brand" style={{ marginBottom: 18 }}>
               <span className="arca-brand-mark">
-                <PawPrint size={23} />
+                <img
+                    src="/projeto-arca-gp8/logo-serra.jpg"
+                    alt="Prefeitura da Serra"
+                    className="arca-brand-logo"
+                />
               </span>
 
                 <span className="arca-brand-text">
