@@ -6,14 +6,30 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import Toast from '@/components/ui/Toast';
 import { addRequest } from '@/lib/arca-storage';
-import { BAIRROS_SERRA, maskCPF, maskPhone } from '@/lib/arca-data';
-import { ArrowRight, CheckCircle2, ClipboardCheck, Home, Search } from 'lucide-react';
+import {
+    BAIRROS_SERRA,
+    isValidCPF,
+    maskCEP,
+    maskCPF,
+    maskPhone,
+    onlyNumbers,
+} from '@/lib/arca-data';
+import {
+    AlertCircle,
+    ArrowRight,
+    CheckCircle2,
+    ClipboardCheck,
+    Home,
+    Loader2,
+    Search,
+} from 'lucide-react';
 
 const initialForm = {
     tutorName: '',
     cpf: '',
     email: '',
     phone: '',
+    cep: '',
     bairro: '',
     address: '',
     requesterType: 'tutor',
@@ -25,6 +41,10 @@ export default function RegistroPage() {
     const [form, setForm] = useState(initialForm);
     const [success, setSuccess] = useState(null);
     const [toast, setToast] = useState('');
+    const [cepLoading, setCepLoading] = useState(false);
+    const [cpfTouched, setCpfTouched] = useState(false);
+
+    const cpfIsInvalid = cpfTouched && form.cpf && !isValidCPF(form.cpf);
 
     function updateField(field, value) {
         setForm((current) => ({
@@ -33,11 +53,48 @@ export default function RegistroPage() {
         }));
     }
 
+    async function searchCep(cepValue) {
+        const cep = onlyNumbers(cepValue);
+
+        if (cep.length !== 8) return;
+
+        try {
+            setCepLoading(true);
+
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const data = await response.json();
+
+            if (data.erro) {
+                setToast('CEP não encontrado. Preencha o endereço manualmente.');
+                return;
+            }
+
+            setForm((current) => ({
+                ...current,
+                cep: maskCEP(cep),
+                address: data.logradouro || current.address,
+                bairro: data.bairro || current.bairro,
+            }));
+
+            setToast('Endereço preenchido automaticamente pelo CEP.');
+        } catch {
+            setToast('Não foi possível buscar o CEP. Preencha manualmente.');
+        } finally {
+            setCepLoading(false);
+        }
+    }
+
     function handleSubmit(event) {
         event.preventDefault();
+        setCpfTouched(true);
 
-        if (!form.tutorName || !form.cpf || !form.phone || !form.bairro) {
-            setToast('Preencha nome, CPF, telefone e bairro.');
+        if (!form.tutorName || !form.cpf || !form.phone || !form.cep || !form.bairro) {
+            setToast('Preencha nome, CPF, telefone, CEP e bairro.');
+            return;
+        }
+
+        if (!isValidCPF(form.cpf)) {
+            setToast('CPF inválido. Confira os números digitados.');
             return;
         }
 
@@ -55,6 +112,7 @@ export default function RegistroPage() {
 
         setSuccess(request);
         setForm(initialForm);
+        setCpfTouched(false);
         setToast('Cadastro enviado com sucesso.');
     }
 
@@ -106,9 +164,12 @@ export default function RegistroPage() {
                         </section>
                     ) : (
                         <form className="arca-form-card arca-form-grid" onSubmit={handleSubmit}>
-                            <div className="arca-form-section">
+                            <div className="arca-form-section arca-field-full">
                                 <h2>Dados pessoais</h2>
-                                <p>Essas informações serão usadas para identificar o responsável.</p>
+                                <p>
+                                    Essas informações serão usadas para identificar o responsável
+                                    e gerar o protocolo.
+                                </p>
                             </div>
 
                             <label>
@@ -124,9 +185,18 @@ export default function RegistroPage() {
                                 CPF
                                 <input
                                     value={form.cpf}
+                                    onBlur={() => setCpfTouched(true)}
                                     onChange={(event) => updateField('cpf', maskCPF(event.target.value))}
                                     placeholder="000.000.000-00"
+                                    className={cpfIsInvalid ? 'arca-input-error' : ''}
                                 />
+
+                                {cpfIsInvalid && (
+                                    <small className="arca-field-error">
+                                        <AlertCircle size={14} />
+                                        CPF inválido. Confira os números digitados.
+                                    </small>
+                                )}
                             </label>
 
                             <label>
@@ -148,6 +218,34 @@ export default function RegistroPage() {
                                 />
                             </label>
 
+                            <div className="arca-form-section arca-field-full">
+                                <h2>Endereço</h2>
+                                <p>
+                                    Digite o CEP para preencher automaticamente a rua e o bairro.
+                                </p>
+                            </div>
+
+                            <label>
+                                CEP
+                                <div className="arca-cep-field">
+                                    <input
+                                        value={form.cep}
+                                        onChange={(event) => {
+                                            const nextCep = maskCEP(event.target.value);
+                                            updateField('cep', nextCep);
+
+                                            if (onlyNumbers(nextCep).length === 8) {
+                                                searchCep(nextCep);
+                                            }
+                                        }}
+                                        onBlur={(event) => searchCep(event.target.value)}
+                                        placeholder="00000-000"
+                                    />
+
+                                    {cepLoading && <Loader2 className="arca-spin" size={18} />}
+                                </div>
+                            </label>
+
                             <label>
                                 Bairro
                                 <select
@@ -155,6 +253,11 @@ export default function RegistroPage() {
                                     onChange={(event) => updateField('bairro', event.target.value)}
                                 >
                                     <option value="">Selecione</option>
+
+                                    {form.bairro && !BAIRROS_SERRA.includes(form.bairro) && (
+                                        <option value={form.bairro}>{form.bairro}</option>
+                                    )}
+
                                     {BAIRROS_SERRA.map((bairro) => (
                                         <option value={bairro} key={bairro}>
                                             {bairro}
@@ -163,14 +266,21 @@ export default function RegistroPage() {
                                 </select>
                             </label>
 
-                            <label>
-                                Endereço
+                            <label className="arca-field-full">
+                                Rua / endereço
                                 <input
                                     value={form.address}
                                     onChange={(event) => updateField('address', event.target.value)}
                                     placeholder="Rua, número e complemento"
                                 />
                             </label>
+
+                            <div className="arca-form-section arca-field-full">
+                                <h2>Perfil da solicitação</h2>
+                                <p>
+                                    Essas informações ajudam a equipe a entender o contexto do cadastro.
+                                </p>
+                            </div>
 
                             <label>
                                 Tipo de solicitante

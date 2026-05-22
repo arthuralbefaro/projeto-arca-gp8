@@ -1,101 +1,117 @@
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import PageTitle from '@/components/ui/PageTitle';
-import AlertBox from '@/components/ui/AlertBox';
-import { documentosPrograma } from '@/lib/constants';
-import { BadgeCheck, FileText, Home, IdCard, PawPrint, ShieldCheck } from 'lucide-react';
+import {
+  AlertCircle,
+  CheckCircle2,
+  FileCheck2,
+  FileText,
+  Home,
+  IdCard,
+  PawPrint,
+  ShieldCheck,
+} from 'lucide-react';
 
-const documentosDetalhados = [
+const documents = [
   {
     title: 'Documento pessoal',
-    description: 'RG, CNH ou outro documento oficial com foto do responsável pelo cadastro.',
+    description:
+        'RG, CNH ou outro documento oficial com foto do responsável pelo cadastro.',
     icon: IdCard,
   },
   {
     title: 'CPF do responsável',
-    description: 'Usado para identificar o cadastro e permitir a consulta da solicitação.',
-    icon: BadgeCheck,
+    description:
+        'Usado para identificar o cadastro e permitir a consulta da solicitação.',
+    icon: FileText,
   },
   {
     title: 'Comprovante de residência',
-    description: 'Documento que comprove moradia no município da Serra.',
+    description:
+        'Documento que comprove residência no município da Serra.',
     icon: Home,
   },
   {
-    title: 'Comprovante do NIS',
-    description: 'Solicitado quando o tutor informa participação no CadÚnico.',
+    title: 'NIS ou CadÚnico',
+    description:
+        'Quando houver, pode ser usado para análise de prioridade social.',
     icon: ShieldCheck,
   },
   {
     title: 'Cartão de vacinação',
-    description: 'Quando aplicável, a equipe poderá solicitar cartão de vacinação antirrábica atualizado.',
-    icon: PawPrint,
+    description:
+        'Informações de vacinação do animal podem ser solicitadas na triagem.',
+    icon: FileCheck2,
   },
   {
-    title: 'Informações do animal',
-    description: 'Fotos, histórico, sintomas ou outras informações podem ser solicitadas durante a triagem.',
-    icon: FileText,
+    title: 'Dados do animal',
+    description:
+        'Nome, espécie, sexo, quantidade de animais e situação de saúde.',
+    icon: PawPrint,
   },
 ];
 
-export const metadata = {
-  title: 'Documentos Necessários | Programa ARCA',
-};
-
 export default function DocumentosPage() {
   return (
-    <div className="arca-page">
-      <Header />
+      <div className="arca-page">
+        <Header />
 
-      <main className="arca-section">
-        <div className="arca-container">
-          <PageTitle
-            badge="Preparação"
-            title="Documentos necessários"
-            subtitle="Confira os documentos que podem ser solicitados durante a análise do cadastro e evite pendências no atendimento."
-          />
+        <main className="arca-documents-page">
+          <section className="arca-container">
+            <div className="arca-documents-hero">
+            <span className="arca-eyebrow">
+              <FileText size={16} />
+              Preparação
+            </span>
 
-          <div className="mb-4">
-            <AlertBox type="info" title="Importante">
-              Nem todos os documentos serão obrigatórios para todos os casos. A equipe poderá pedir documentos específicos conforme o perfil do tutor e a situação do animal.
-            </AlertBox>
-          </div>
+              <h1>Documentos necessários</h1>
 
-          <div className="row g-4 mb-5">
-            {documentosDetalhados.map((documento) => {
-              const Icon = documento.icon;
-
-              return (
-                <div className="col-md-6 col-lg-4" key={documento.title}>
-                  <div className="arca-feature-card">
-                    <div className="arca-feature-icon">
-                      <Icon size={24} />
-                    </div>
-                    <h2 className="h5 fw-bold">{documento.title}</h2>
-                    <p className="text-muted mb-0">{documento.description}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="arca-card">
-            <h2 className="fw-bold h4 mb-3">Lista resumida</h2>
-            <div className="row g-3">
-              {documentosPrograma.map((item) => (
-                <div className="col-md-6" key={item}>
-                  <div className="d-flex gap-3 p-3 rounded-4 border h-100">
-                    <BadgeCheck color="var(--arca-green-dark)" />
-                    <span className="fw-bold">{item}</span>
-                  </div>
-                </div>
-              ))}
+              <p>
+                Confira os documentos que podem ser solicitados durante a análise
+                do cadastro e evite pendências no atendimento.
+              </p>
             </div>
-          </div>
-        </div>
-      </main>
 
-      <Footer />
-    </div>
+            <div className="arca-documents-alert">
+              <AlertCircle size={24} />
+
+              <div>
+                <strong>Importante</strong>
+                <p>
+                  Nem todos os documentos serão obrigatórios para todos os casos.
+                  A equipe poderá solicitar documentos específicos conforme o
+                  perfil do tutor, o tipo de solicitação e a situação do animal.
+                </p>
+              </div>
+            </div>
+
+            <div className="arca-documents-grid">
+              {documents.map((item, index) => {
+                const Icon = item.icon;
+
+                return (
+                    <article
+                        className="arca-document-card"
+                        key={item.title}
+                        style={{ animationDelay: `${index * 0.08}s` }}
+                    >
+                  <span className="arca-document-icon">
+                    <Icon size={24} />
+                  </span>
+
+                      <div>
+                        <h2>{item.title}</h2>
+                        <p>{item.description}</p>
+                      </div>
+
+                      <CheckCircle2 className="arca-document-check" size={20} />
+                    </article>
+                );
+              })}
+            </div>
+          </section>
+        </main>
+
+        <Footer />
+      </div>
   );
 }

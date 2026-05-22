@@ -162,7 +162,11 @@ export default function Home() {
 
               <div className="arca-hero-card">
                 <div className="arca-pet-visual">
-                  <PawPrint />
+                  <span className="arca-orbit arca-orbit-one" />
+                  <span className="arca-orbit arca-orbit-two" />
+                  <span className="arca-orbit arca-orbit-three" />
+                  <span className="arca-orbit arca-orbit-four" />
+                  <span className="arca-core-shape" />
                 </div>
 
                 <div className="arca-floating-card one">
