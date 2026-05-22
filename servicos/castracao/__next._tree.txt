@@ -1,3 +1,3 @@
 :HL["/projeto-arca-gp8/_next/static/chunks/0n.0be.9ux__e.css","style"]
 :HL["/projeto-arca-gp8/logo-serra.jpg","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"servicos","param":null,"prefetchHints":0,"slots":{"children":{"name":"castracao","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"Cn7l4fQIzC6oOgqHTc9ZW"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"servicos","param":null,"prefetchHints":0,"slots":{"children":{"name":"castracao","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"sHD_IKQyLtsNc1auM58vA"}
