@@ -1684,6 +1684,7 @@ textarea:focus,
 }
 
 .arca-document-card {
+  cursor: pointer;
   position: relative;
   overflow: hidden;
   min-height: 230px;
@@ -1701,6 +1702,7 @@ textarea:focus,
 }
 
 .arca-document-card::before {
+  cursor: pointer;
   content: "";
   position: absolute;
   width: 180px;
@@ -1713,12 +1715,14 @@ textarea:focus,
 }
 
 .arca-document-card:hover {
+  cursor: pointer;
   transform: translateY(-8px);
   border-color: rgba(0, 87, 184, 0.28);
   box-shadow: 0 26px 70px rgba(0, 59, 122, 0.16);
 }
 
 .arca-document-card:hover::before {
+  cursor: pointer;
   transform: scale(1.18);
 }
 
@@ -1737,6 +1741,7 @@ textarea:focus,
 }
 
 .arca-document-card h2 {
+  cursor: pointer;
   position: relative;
   z-index: 1;
   margin: 0 0 10px;
@@ -1747,6 +1752,7 @@ textarea:focus,
 }
 
 .arca-document-card p {
+  cursor: pointer;
   position: relative;
   z-index: 1;
   margin: 0;
