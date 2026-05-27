@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import Toast from '@/components/ui/Toast';
-import { addRequest } from '@/lib/arca-storage';
+import { solicitacoesApi, ApiError } from '@/lib/api';
 import {
     BAIRROS_SERRA,
     isValidCPF,
@@ -25,42 +25,38 @@ import {
 } from 'lucide-react';
 
 const initialForm = {
-    tutorName: '',
-    cpf: '',
-    email: '',
-    phone: '',
-    cep: '',
-    bairro: '',
-    address: '',
-    requesterType: 'tutor',
-    vulnerableArea: 'nao',
-    notes: '',
+    tutorNome: '',
+    tutorCpf: '',
+    tutorEmail: '',
+    tutorTelefone: '',
+    tutorCep: '',
+    tutorBairro: '',
+    tutorEndereco: '',
+    tipoSolicitante: 'TUTOR',
+    areaVulneravel: false,
+    observacoes: '',
 };
 
 export default function RegistroPage() {
     const [form, setForm] = useState(initialForm);
     const [success, setSuccess] = useState(null);
     const [toast, setToast] = useState('');
+    const [loading, setLoading] = useState(false);
     const [cepLoading, setCepLoading] = useState(false);
     const [cpfTouched, setCpfTouched] = useState(false);
 
-    const cpfIsInvalid = cpfTouched && form.cpf && !isValidCPF(form.cpf);
+    const cpfIsInvalid = cpfTouched && form.tutorCpf && !isValidCPF(form.tutorCpf);
 
     function updateField(field, value) {
-        setForm((current) => ({
-            ...current,
-            [field]: value,
-        }));
+        setForm((current) => ({ ...current, [field]: value }));
     }
 
     async function searchCep(cepValue) {
         const cep = onlyNumbers(cepValue);
-
         if (cep.length !== 8) return;
 
         try {
             setCepLoading(true);
-
             const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
             const data = await response.json();
 
@@ -71,9 +67,9 @@ export default function RegistroPage() {
 
             setForm((current) => ({
                 ...current,
-                cep: maskCEP(cep),
-                address: data.logradouro || current.address,
-                bairro: data.bairro || current.bairro,
+                tutorCep: maskCEP(cep),
+                tutorEndereco: data.logradouro || current.tutorEndereco,
+                tutorBairro: data.bairro || current.tutorBairro,
             }));
 
             setToast('Endereço preenchido automaticamente pelo CEP.');
@@ -84,36 +80,52 @@ export default function RegistroPage() {
         }
     }
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
         setCpfTouched(true);
 
-        if (!form.tutorName || !form.cpf || !form.phone || !form.cep || !form.bairro) {
+        if (!form.tutorNome || !form.tutorCpf || !form.tutorTelefone || !form.tutorCep || !form.tutorBairro) {
             setToast('Preencha nome, CPF, telefone, CEP e bairro.');
             return;
         }
 
-        if (!isValidCPF(form.cpf)) {
+        if (!isValidCPF(form.tutorCpf)) {
             setToast('CPF inválido. Confira os números digitados.');
             return;
         }
 
-        const request = addRequest({
-            ...form,
-            type: 'cadastro_tutor',
-            service: 'Cadastro de tutor/protetor',
-            animalName: 'Não informado',
-            species: 'Não informado',
-            sex: 'Não informado',
-            quantity: 1,
-            vaccinated: 'nao_informado',
-            riskSituation: 'nao',
-        });
+        setLoading(true);
 
-        setSuccess(request);
-        setForm(initialForm);
-        setCpfTouched(false);
-        setToast('Cadastro enviado com sucesso.');
+        try {
+            const payload = {
+                tipo: 'CADASTRO_TUTOR',
+                tutorNome: form.tutorNome.trim(),
+                tutorCpf: onlyNumbers(form.tutorCpf),
+                tutorEmail: form.tutorEmail.trim() || null,
+                tutorTelefone: form.tutorTelefone,
+                tutorCep: form.tutorCep,
+                tutorBairro: form.tutorBairro,
+                tutorEndereco: form.tutorEndereco.trim() || null,
+                tipoSolicitante: form.tipoSolicitante,
+                animalQuantidade: 1,
+                situacaoRisco: false,
+                areaVulneravel: form.areaVulneravel,
+                observacoes: form.observacoes.trim() || null,
+            };
+
+            const result = await solicitacoesApi.criar(payload);
+            setSuccess(result);
+            setForm(initialForm);
+            setCpfTouched(false);
+        } catch (error) {
+            const message =
+                error instanceof ApiError
+                    ? error.message
+                    : 'Erro ao enviar cadastro. Tente novamente.';
+            setToast(message);
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -124,10 +136,10 @@ export default function RegistroPage() {
             <main className="arca-section">
                 <div className="arca-container">
                     <div className="arca-section-heading">
-            <span className="arca-eyebrow">
-              <ClipboardCheck size={16} />
-              Cadastro do tutor
-            </span>
+                        <span className="arca-eyebrow">
+                            <ClipboardCheck size={16} />
+                            Cadastro do tutor
+                        </span>
 
                         <h1>Cadastre o responsável pelo animal.</h1>
 
@@ -148,7 +160,7 @@ export default function RegistroPage() {
                                 andamento do atendimento.
                             </p>
 
-                            <div className="arca-protocol-box">{success.protocol}</div>
+                            <div className="arca-protocol-box">{success.protocolo}</div>
 
                             <div className="arca-success-actions">
                                 <Link href="/consulta" className="arca-btn arca-btn-primary">
@@ -175,22 +187,23 @@ export default function RegistroPage() {
                             <label>
                                 Nome completo
                                 <input
-                                    value={form.tutorName}
-                                    onChange={(event) => updateField('tutorName', event.target.value)}
+                                    value={form.tutorNome}
+                                    onChange={(event) => updateField('tutorNome', event.target.value)}
                                     placeholder="Ex.: Maria Souza"
+                                    disabled={loading}
                                 />
                             </label>
 
                             <label>
                                 CPF
                                 <input
-                                    value={form.cpf}
+                                    value={form.tutorCpf}
                                     onBlur={() => setCpfTouched(true)}
-                                    onChange={(event) => updateField('cpf', maskCPF(event.target.value))}
+                                    onChange={(event) => updateField('tutorCpf', maskCPF(event.target.value))}
                                     placeholder="000.000.000-00"
                                     className={cpfIsInvalid ? 'arca-input-error' : ''}
+                                    disabled={loading}
                                 />
-
                                 {cpfIsInvalid && (
                                     <small className="arca-field-error">
                                         <AlertCircle size={14} />
@@ -203,18 +216,20 @@ export default function RegistroPage() {
                                 E-mail
                                 <input
                                     type="email"
-                                    value={form.email}
-                                    onChange={(event) => updateField('email', event.target.value)}
+                                    value={form.tutorEmail}
+                                    onChange={(event) => updateField('tutorEmail', event.target.value)}
                                     placeholder="email@exemplo.com"
+                                    disabled={loading}
                                 />
                             </label>
 
                             <label>
                                 Telefone
                                 <input
-                                    value={form.phone}
-                                    onChange={(event) => updateField('phone', maskPhone(event.target.value))}
+                                    value={form.tutorTelefone}
+                                    onChange={(event) => updateField('tutorTelefone', maskPhone(event.target.value))}
                                     placeholder="(27) 99999-9999"
+                                    disabled={loading}
                                 />
                             </label>
 
@@ -229,19 +244,16 @@ export default function RegistroPage() {
                                 CEP
                                 <div className="arca-cep-field">
                                     <input
-                                        value={form.cep}
+                                        value={form.tutorCep}
                                         onChange={(event) => {
                                             const nextCep = maskCEP(event.target.value);
-                                            updateField('cep', nextCep);
-
-                                            if (onlyNumbers(nextCep).length === 8) {
-                                                searchCep(nextCep);
-                                            }
+                                            updateField('tutorCep', nextCep);
+                                            if (onlyNumbers(nextCep).length === 8) searchCep(nextCep);
                                         }}
                                         onBlur={(event) => searchCep(event.target.value)}
                                         placeholder="00000-000"
+                                        disabled={loading}
                                     />
-
                                     {cepLoading && <Loader2 className="arca-spin" size={18} />}
                                 </div>
                             </label>
@@ -249,13 +261,14 @@ export default function RegistroPage() {
                             <label>
                                 Bairro
                                 <select
-                                    value={form.bairro}
-                                    onChange={(event) => updateField('bairro', event.target.value)}
+                                    value={form.tutorBairro}
+                                    onChange={(event) => updateField('tutorBairro', event.target.value)}
+                                    disabled={loading}
                                 >
                                     <option value="">Selecione</option>
 
-                                    {form.bairro && !BAIRROS_SERRA.includes(form.bairro) && (
-                                        <option value={form.bairro}>{form.bairro}</option>
+                                    {form.tutorBairro && !BAIRROS_SERRA.includes(form.tutorBairro) && (
+                                        <option value={form.tutorBairro}>{form.tutorBairro}</option>
                                     )}
 
                                     {BAIRROS_SERRA.map((bairro) => (
@@ -269,9 +282,10 @@ export default function RegistroPage() {
                             <label className="arca-field-full">
                                 Rua / endereço
                                 <input
-                                    value={form.address}
-                                    onChange={(event) => updateField('address', event.target.value)}
+                                    value={form.tutorEndereco}
+                                    onChange={(event) => updateField('tutorEndereco', event.target.value)}
                                     placeholder="Rua, número e complemento"
+                                    disabled={loading}
                                 />
                             </label>
 
@@ -285,21 +299,23 @@ export default function RegistroPage() {
                             <label>
                                 Tipo de solicitante
                                 <select
-                                    value={form.requesterType}
-                                    onChange={(event) => updateField('requesterType', event.target.value)}
+                                    value={form.tipoSolicitante}
+                                    onChange={(event) => updateField('tipoSolicitante', event.target.value)}
+                                    disabled={loading}
                                 >
-                                    <option value="tutor">Tutor/responsável</option>
-                                    <option value="cadunico">Família CadÚnico/NIS</option>
-                                    <option value="protetor">Protetor independente</option>
-                                    <option value="ong">ONG/projeto de proteção animal</option>
+                                    <option value="TUTOR">Tutor/responsável</option>
+                                    <option value="CADUNICO">Família CadÚnico/NIS</option>
+                                    <option value="PROTETOR">Protetor independente</option>
+                                    <option value="ONG">ONG/projeto de proteção animal</option>
                                 </select>
                             </label>
 
                             <label>
                                 Área vulnerável ou de risco?
                                 <select
-                                    value={form.vulnerableArea}
-                                    onChange={(event) => updateField('vulnerableArea', event.target.value)}
+                                    value={form.areaVulneravel ? 'sim' : 'nao'}
+                                    onChange={(event) => updateField('areaVulneravel', event.target.value === 'sim')}
+                                    disabled={loading}
                                 >
                                     <option value="nao">Não</option>
                                     <option value="sim">Sim</option>
@@ -309,16 +325,21 @@ export default function RegistroPage() {
                             <label className="arca-field-full">
                                 Observações
                                 <textarea
-                                    value={form.notes}
-                                    onChange={(event) => updateField('notes', event.target.value)}
+                                    value={form.observacoes}
+                                    onChange={(event) => updateField('observacoes', event.target.value)}
                                     placeholder="Descreva alguma informação importante para a triagem."
                                     rows={4}
+                                    disabled={loading}
                                 />
                             </label>
 
                             <div className="arca-form-actions arca-field-full">
-                                <button type="submit" className="arca-btn arca-btn-primary">
-                                    Enviar cadastro
+                                <button
+                                    type="submit"
+                                    className="arca-btn arca-btn-primary"
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Enviando...' : 'Enviar cadastro'}
                                     <ArrowRight size={18} />
                                 </button>
                             </div>

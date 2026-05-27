@@ -1,141 +1,158 @@
-# Projeto ARCA
+# Programa ARCA — Sistema de Atendimento Animal Digital
 
-Protótipo front-end do Programa ARCA, voltado para cadastro de tutores, solicitação de castração, consulta de protocolo e acompanhamento administrativo demonstrativo.
+Sistema fullstack para cadastro, triagem e acompanhamento de solicitações do Programa ARCA da Prefeitura Municipal da Serra/ES.
 
-## O que o projeto faz
+## Stack
 
-- Página inicial institucional do Programa ARCA.
-- Cadastro de tutor com geração de protocolo.
-- Solicitação de castração com protocolo próprio.
-- Consulta de solicitação por protocolo, CPF ou e-mail.
-- Linha do tempo de status da solicitação.
-- Página de documentos necessários.
-- Painel administrativo demonstrativo.
-- Filtros por status, bairro e espécie.
-- Alteração de status no painel administrativo.
-- Dados persistidos no navegador via `localStorage`.
+| Camada | Tecnologia |
+|---|---|
+| Frontend | Next.js 16, React 19, Bootstrap 5 |
+| Backend | Java 21, Spring Boot 3.3, Maven |
+| Banco | PostgreSQL 16 |
+| Auth | JWT (JJWT 0.12) + Spring Security |
+| Migrations | Flyway |
+| Docs | SpringDoc OpenAPI (Swagger UI) |
+| Container | Docker + Docker Compose |
 
-> Esta versão não usa backend. Ela foi preparada para funcionar como protótipo estático no GitHub Pages.
+---
 
-## Tecnologias usadas
-
-- Next.js
-- React
-- JavaScript
-- Bootstrap
-- CSS
-- Lucide React
-- GitHub Pages
-
-## Rotas disponíveis
-
-```txt
-/                         Página inicial
-/registro                 Cadastro de tutor
-/servicos/castracao       Solicitação de castração
-/consulta                 Consulta de protocolo
-/documentos               Documentos necessários
-/login                    Tela de login
-/admin/relatorios         Painel administrativo demo
-```
-
-## Como testar localmente
-
-### 1. Instalar dependências
+## Início rápido com Docker
 
 ```bash
+# 1. Clone o repositório
+git clone <url-do-repositorio>
+cd projeto-arca
+
+# 2. Suba o banco + backend
+docker compose up -d
+
+# 3. Instale dependências e rode o frontend
 npm install
-```
-
-### 2. Rodar em desenvolvimento
-
-```bash
 npm run dev
 ```
 
-Depois acesse:
+- **Frontend**: http://localhost:3000
+- **Backend / Swagger**: http://localhost:8080/swagger-ui.html
+- **API Docs (JSON)**: http://localhost:8080/api-docs
 
-```txt
-http://localhost:3000
+---
+
+## Execução sem Docker
+
+### Pré-requisitos
+- Java 21+
+- PostgreSQL 16 rodando localmente
+
+### Backend
+
+```bash
+# Criar banco manualmente
+psql -U postgres -c "CREATE DATABASE arca_db;"
+psql -U postgres -c "CREATE USER arca_user WITH PASSWORD 'arca_pass';"
+psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE arca_db TO arca_user;"
+
+# Subir o backend (Flyway roda as migrations automaticamente)
+cd backend
+./mvnw spring-boot:run
 ```
 
-## Dados de demonstração
+### Frontend
 
-O sistema cria alguns cadastros simulados automaticamente no navegador.
-
-Protocolo para teste:
-
-```txt
-ARCA-2026-0001
+```bash
+# Na raiz do projeto
+npm install
+npm run dev
 ```
 
-Você também pode criar um novo cadastro pela rota:
+---
 
-```txt
-/registro
+## Variáveis de ambiente
+
+Copie `.env.example` para `.env.local`:
+
+```bash
+cp .env.example .env.local
 ```
 
-Ou uma solicitação direta de castração pela rota:
+| Variável | Descrição | Default |
+|---|---|---|
+| `NEXT_PUBLIC_API_URL` | URL base do backend | `http://localhost:8080` |
+| `DATABASE_URL` | JDBC URL do PostgreSQL | `jdbc:postgresql://localhost:5432/arca_db` |
+| `DATABASE_USER` | Usuário do banco | `arca_user` |
+| `DATABASE_PASS` | Senha do banco | `arca_pass` |
+| `JWT_SECRET` | Segredo JWT (mín. 32 chars) | — |
+| `JWT_EXPIRATION_MS` | Validade do token em ms | `86400000` (24h) |
+| `CORS_ALLOWED_ORIGINS` | Origins permitidas | `http://localhost:3000` |
 
-```txt
-/servicos/castracao
+---
+
+## Credenciais padrão
+
+```
+E-mail: admin@arca.serra.es.gov.br
+Senha:  admin123
 ```
 
-Depois consulte o status em:
+---
 
-```txt
-/consulta
+## Endpoints da API
+
+### Público
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `POST` | `/api/auth/login` | Login, retorna JWT |
+| `POST` | `/api/solicitacoes` | Criar nova solicitação |
+| `GET` | `/api/solicitacoes/consulta?q={query}` | Consultar por protocolo/CPF/email/nome |
+| `GET` | `/api/health` | Health check |
+
+### Admin (Bearer JWT obrigatório)
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `GET` | `/api/admin/solicitacoes` | Listar com filtros e paginação |
+| `GET` | `/api/admin/solicitacoes/{id}` | Detalhe com histórico |
+| `PATCH` | `/api/admin/solicitacoes/{id}/status` | Alterar status |
+| `GET` | `/api/admin/stats` | Estatísticas do dashboard |
+
+Documentação interativa completa: **http://localhost:8080/swagger-ui.html**
+
+---
+
+## Fluxo de status
+
+```
+RECEBIDO → TRIAGEM → PENDENTE → APROVADO → AGENDAMENTO → CONCLUIDO
+                                                        ↘ RECUSADO
 ```
 
-## Painel administrativo
+## Cálculo de prioridade automático
 
-Acesse:
+| Critério | Pontos |
+|---|---|
+| Tipo CADUNICO ou ONG | +3 |
+| Tipo PROTETOR | +2 |
+| Qtd. animais ≥ 3 | +2 |
+| Situação de risco | +2 |
+| Área vulnerável | +1 |
+| **≥ 5 pontos** | **Alta** |
+| **≥ 3 pontos** | **Média** |
+| **< 3 pontos** | **Baixa** |
 
-```txt
-/admin/relatorios
+---
+
+## Estrutura
+
 ```
-
-No painel é possível:
-
-- Ver totais gerais.
-- Filtrar solicitações.
-- Ver demanda por bairro.
-- Ver demanda por espécie.
-- Alterar status da solicitação.
-- Restaurar dados de demonstração.
-
-## Deploy no GitHub Pages
-
-O projeto está configurado para gerar exportação estática com Next.js.
-
-Arquivo principal:
-
-```txt
-next.config.mjs
+projeto-arca/
+├── src/                    # Frontend Next.js
+│   ├── app/                # Páginas (App Router)
+│   └── lib/api.js          # Cliente HTTP centralizado com JWT
+├── backend/                # Spring Boot
+│   └── src/main/java/br/gov/serra/arca/
+│       ├── config/         # Security, CORS, Swagger
+│       ├── security/       # JWT Provider e Filter
+│       └── modules/        # auth, solicitacoes, historico, admin
+├── docker-compose.yml
+└── .env.example
 ```
-
-Configuração usada:
-
-```js
-output: 'export'
-```
-
-O deploy é feito via GitHub Actions em:
-
-```txt
-.github/workflows/deploy.yml
-```
-
-No GitHub, configure:
-
-```txt
-Settings → Pages → Build and deployment → Source → GitHub Actions
-```
-
-Depois faça commit e push na branch `main`.
-
-## Observação importante
-
-Como o projeto está em GitHub Pages, ele não roda backend Node/Java. Por isso, os dados ficam salvos no navegador com `localStorage`.
-
-Para transformar em sistema real, o próximo passo seria conectar o front-end a um backend Java com banco PostgreSQL.

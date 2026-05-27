@@ -5,34 +5,39 @@ import { useRouter } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import Toast from '@/components/ui/Toast';
-import { setAdminAuth } from '@/lib/arca-storage';
+import { authApi, ApiError } from '@/lib/api';
 import { Lock, ShieldCheck } from 'lucide-react';
 
 export default function LoginPage() {
     const router = useRouter();
     const [toast, setToast] = useState('');
+    const [loading, setLoading] = useState(false);
     const [form, setForm] = useState({
-        email: 'admin@arca.serra.es.gov.br',
-        password: 'admin123',
+        email: '',
+        senha: '',
     });
 
     function updateField(field, value) {
-        setForm((current) => ({
-            ...current,
-            [field]: value,
-        }));
+        setForm((current) => ({ ...current, [field]: value }));
     }
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
+        setLoading(true);
 
-        if (form.email === 'admin@arca.serra.es.gov.br' && form.password === 'admin123') {
-            setAdminAuth(true);
+        try {
+            const data = await authApi.login(form.email, form.senha);
+            authApi.saveToken(data.token);
             router.push('/admin/relatorios');
-            return;
+        } catch (error) {
+            const message =
+                error instanceof ApiError
+                    ? error.message
+                    : 'Erro ao conectar com o servidor. Verifique sua conexão.';
+            setToast(message);
+        } finally {
+            setLoading(false);
         }
-
-        setToast('E-mail ou senha inválidos.');
     }
 
     return (
@@ -43,21 +48,15 @@ export default function LoginPage() {
             <main className="arca-section">
                 <div className="arca-container arca-auth-wrap">
                     <section className="arca-auth-card">
-            <span className="arca-card-icon">
-              <ShieldCheck size={25} />
-            </span>
+                        <span className="arca-card-icon">
+                            <ShieldCheck size={25} />
+                        </span>
 
-                        <h1>Acesso administrativo demo</h1>
+                        <h1>Acesso administrativo</h1>
 
                         <p>
-                            Área demonstrativa para acompanhamento das solicitações do Programa ARCA.
+                            Área restrita aos operadores do Programa ARCA.
                         </p>
-
-                        <div className="arca-demo-credentials">
-                            <strong>Credenciais de teste</strong>
-                            <span>E-mail: admin@arca.serra.es.gov.br</span>
-                            <span>Senha: admin123</span>
-                        </div>
 
                         <form onSubmit={handleSubmit}>
                             <label>
@@ -66,6 +65,8 @@ export default function LoginPage() {
                                     type="email"
                                     value={form.email}
                                     onChange={(event) => updateField('email', event.target.value)}
+                                    required
+                                    disabled={loading}
                                 />
                             </label>
 
@@ -73,13 +74,19 @@ export default function LoginPage() {
                                 Senha
                                 <input
                                     type="password"
-                                    value={form.password}
-                                    onChange={(event) => updateField('password', event.target.value)}
+                                    value={form.senha}
+                                    onChange={(event) => updateField('senha', event.target.value)}
+                                    required
+                                    disabled={loading}
                                 />
                             </label>
 
-                            <button type="submit" className="arca-btn arca-btn-primary">
-                                Entrar no painel
+                            <button
+                                type="submit"
+                                className="arca-btn arca-btn-primary"
+                                disabled={loading}
+                            >
+                                {loading ? 'Entrando...' : 'Entrar no painel'}
                                 <Lock size={18} />
                             </button>
                         </form>

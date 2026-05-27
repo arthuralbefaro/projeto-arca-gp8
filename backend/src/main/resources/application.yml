@@ -1,27 +1,40 @@
-server:
-  port: 8081
-
 spring:
   application:
     name: arca
   datasource:
-    url: jdbc:postgresql://localhost:5435/arca_db
-    username: arca_user
-    password: arca_password
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/arca_db}
+    username: ${DATABASE_USER:arca_user}
+    password: ${DATABASE_PASS:arca_pass}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: validate
-    open-in-view: false
+    show-sql: false
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
   flyway:
     enabled: true
     locations: classpath:db/migration
+    baseline-on-migrate: true
 
-app:
+server:
+  port: ${PORT:8080}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+arca:
+  jwt:
+    secret: ${JWT_SECRET:chave-secreta-pro-projeto-arca-que-deve-ter-pelo-menos-256-bits-para-hs256}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
   cors:
-    allowed-origins:
-      - http://localhost:3000
-      - http://localhost:3001
-      - https://arthuralbefaro.github.io
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method

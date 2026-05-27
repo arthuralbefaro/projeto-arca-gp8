@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: arca_postgres
+    environment:
+      POSTGRES_DB: arca_db
+      POSTGRES_USER: arca_user
+      POSTGRES_PASSWORD: arca_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - arca_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U arca_user -d arca_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: arca_backend
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/arca_db
+      DATABASE_USER: arca_user
+      DATABASE_PASS: arca_pass
+      JWT_SECRET: arca-super-secret-key-change-in-production-256-bits-minimum
+      JWT_EXPIRATION_MS: 86400000
+      CORS_ALLOWED_ORIGINS: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  arca_postgres_data:

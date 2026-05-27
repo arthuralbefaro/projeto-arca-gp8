@@ -1824,6 +1824,16 @@ textarea:focus,
   font-weight: 800;
 }
 
+.arca-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 20px 0 4px;
+  font-weight: 700;
+  color: var(--arca-muted);
+}
+
 @keyframes arcaSpin {
   from {
     transform: translateY(-50%) rotate(0deg);

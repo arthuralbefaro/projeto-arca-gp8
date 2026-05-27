@@ -6,29 +6,47 @@ import jakarta.validation.ConstraintValidatorContext;
 public class CpfValidator implements ConstraintValidator<ValidCpf, String> {
 
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null || value.isBlank()) {
-            return false;
-        }
-        String cpf = value.replaceAll("[^0-9]", "");
-        if (cpf.length() != 11) {
-            return false;
-        }
-        if (cpf.chars().distinct().count() == 1) {
-            return false;
-        }
-        return validateDigit(cpf, 9) && validateDigit(cpf, 10);
+    public void initialize(ValidCpf constraintAnnotation) {
     }
 
-    private boolean validateDigit(String cpf, int position) {
+    @Override
+    public boolean isValid(String cpf, ConstraintValidatorContext context) {
+        if (cpf == null || cpf.isBlank()) {
+            return false;
+        }
+
+        // remove caracteres não numéricos
+        String digits = cpf.replaceAll("[^0-9]", "");
+
+        if (digits.length() != 11) {
+            return false;
+        }
+
+        // rejeita CPFs com todos os dígitos iguais
+        if (digits.chars().distinct().count() == 1) {
+            return false;
+        }
+
+        // valida o primeiro dígito verificador
         int sum = 0;
-        for (int i = 0; i < position; i++) {
-            sum += Character.getNumericValue(cpf.charAt(i)) * (position + 1 - i);
+        for (int i = 0; i < 9; i++) {
+            sum += (digits.charAt(i) - '0') * (10 - i);
         }
-        int remainder = (sum * 10) % 11;
-        if (remainder == 10) {
-            remainder = 0;
+        int firstDigit = 11 - (sum % 11);
+        if (firstDigit >= 10) firstDigit = 0;
+
+        if (firstDigit != (digits.charAt(9) - '0')) {
+            return false;
         }
-        return remainder == Character.getNumericValue(cpf.charAt(position));
+
+        // valida o segundo dígito verificador
+        sum = 0;
+        for (int i = 0; i < 10; i++) {
+            sum += (digits.charAt(i) - '0') * (11 - i);
+        }
+        int secondDigit = 11 - (sum % 11);
+        if (secondDigit >= 10) secondDigit = 0;
+
+        return secondDigit == (digits.charAt(10) - '0');
     }
 }
