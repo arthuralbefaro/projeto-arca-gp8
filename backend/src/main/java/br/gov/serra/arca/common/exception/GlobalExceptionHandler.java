@@ -1,6 +1,7 @@
 package br.gov.serra.arca.common.exception;
 
 import br.gov.serra.arca.common.dto.ApiResponseDTO;
+import br.gov.serra.arca.security.RateLimitExceededException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponseDTO<Object>> handleAuthenticationException(AuthenticationException ex) {
         log.warn("Erro de autenticação: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponseDTO.error("Credenciais inválidas. Verifique seu e-mail e senha."));
+    }
+
+    @ExceptionHandler(RateLimitExceededException.class)
+    public ResponseEntity<ApiResponseDTO<Object>> handleRateLimitExceededException(RateLimitExceededException ex) {
+        log.warn("Limite de tentativas excedido: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .body(ApiResponseDTO.error("Muitas tentativas. Tente novamente mais tarde."));
     }
 
     @ExceptionHandler(Exception.class)

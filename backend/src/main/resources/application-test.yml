@@ -16,6 +16,14 @@ spring:
 arca:
   jwt:
     secret: test-secret-key-for-unit-testing-only-must-be-256-bits
+    issuer: arca-api-test
+    audience: arca-admin-test
     expiration-ms: 3600000
+    refresh-expiration-ms: 7200000
+    clock-skew-seconds: 60
   cors:
     allowed-origins: http://localhost:3000
+  security:
+    cookies:
+      secure: false
+      same-site: Lax

@@ -5,10 +5,13 @@ import br.gov.serra.arca.modules.admin.dto.DashboardStatsDTO;
 import br.gov.serra.arca.modules.solicitacoes.SolicitacaoService;
 import br.gov.serra.arca.modules.solicitacoes.dto.AlterarStatusDTO;
 import br.gov.serra.arca.modules.solicitacoes.dto.SolicitacaoResponseDTO;
+import br.gov.serra.arca.security.ClientIpResolver;
+import br.gov.serra.arca.security.RateLimitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,7 +31,11 @@ import java.util.UUID;
 @SecurityRequirement(name = "bearerAuth")
 public class AdminController {
 
+    private static final int MAX_PAGE_SIZE = 100;
+
     private final SolicitacaoService solicitacaoService;
+    private final RateLimitService rateLimitService;
+    private final ClientIpResolver clientIpResolver;
 
     @GetMapping("/solicitacoes")
     @Operation(
@@ -42,7 +49,9 @@ public class AdminController {
             @Parameter(description = "Número da página (0-based)") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Tamanho da página") @RequestParam(defaultValue = "20") int size) {
 
-        Pageable pageable = PageRequest.of(page, size);
+        int safePage = Math.max(page, 0);
+        int safeSize = Math.min(Math.max(size, 1), MAX_PAGE_SIZE);
+        Pageable pageable = PageRequest.of(safePage, safeSize);
         Page<SolicitacaoResponseDTO> resultado = solicitacaoService.listarAdmin(status, bairro, tipoSolicitante, pageable);
         return ResponseEntity.ok(ApiResponseDTO.ok(resultado));
     }
@@ -62,7 +71,10 @@ public class AdminController {
     )
     public ResponseEntity<ApiResponseDTO<SolicitacaoResponseDTO>> alterarStatus(
             @PathVariable UUID id,
-            @Valid @RequestBody AlterarStatusDTO dto) {
+            @Valid @RequestBody AlterarStatusDTO dto,
+            HttpServletRequest request) {
+        String clientIp = clientIpResolver.resolve(request);
+        rateLimitService.check("admin-mutation", clientIp, RateLimitService.ADMIN_MUTATION);
         SolicitacaoResponseDTO atualizada = solicitacaoService.alterarStatus(id, dto);
         return ResponseEntity.ok(ApiResponseDTO.ok(atualizada, "Status alterado para: " + dto.getStatus()));
     }

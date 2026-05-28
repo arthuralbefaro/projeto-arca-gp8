@@ -10,4 +10,6 @@ import java.util.UUID;
 public interface HistoricoStatusRepository extends JpaRepository<HistoricoStatus, UUID> {
 
     List<HistoricoStatus> findBySolicitacaoIdOrderByDataAsc(UUID solicitacaoId);
+
+    List<HistoricoStatus> findBySolicitacaoIdInOrderByDataAsc(List<UUID> solicitacaoIds);
 }

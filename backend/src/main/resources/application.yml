@@ -4,11 +4,12 @@ spring:
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/arca_db}
     username: ${DATABASE_USER:arca_user}
-    password: ${DATABASE_PASS:arca_pass}
+    password: ${DATABASE_PASS:}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: validate
+    open-in-view: false
     show-sql: false
     properties:
       hibernate:
@@ -22,19 +23,53 @@ spring:
 server:
   port: ${PORT:8080}
   error:
-    include-message: always
-    include-binding-errors: always
+    include-message: never
+    include-binding-errors: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when_authorized
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: Programa ARCA
+    description: Plataforma institucional de atendimento animal da Prefeitura da Serra
+    version: 1.0.0
+
+logging:
+  pattern:
+    level: "%5p [correlationId:%X{correlationId:-}]"
 
 arca:
   jwt:
-    secret: ${JWT_SECRET:chave-secreta-pro-projeto-arca-que-deve-ter-pelo-menos-256-bits-para-hs256}
-    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+    secret: ${JWT_SECRET:}
+    issuer: ${JWT_ISSUER:arca-api}
+    audience: ${JWT_AUDIENCE:arca-admin}
+    expiration-ms: ${JWT_EXPIRATION_MS:900000}
+    refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:28800000}
+    clock-skew-seconds: ${JWT_CLOCK_SKEW_SECONDS:60}
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+  security:
+    cookies:
+      secure: ${COOKIE_SECURE:false}
+      same-site: ${COOKIE_SAME_SITE:Lax}
 
 springdoc:
   api-docs:
     path: /api-docs
+    enabled: ${SWAGGER_ENABLED:false}
   swagger-ui:
     path: /swagger-ui.html
+    enabled: ${SWAGGER_ENABLED:false}
     operationsSorter: method

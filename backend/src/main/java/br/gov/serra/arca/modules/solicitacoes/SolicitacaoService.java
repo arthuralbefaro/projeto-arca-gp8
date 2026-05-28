@@ -9,10 +9,12 @@ import br.gov.serra.arca.modules.solicitacoes.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.*;
@@ -25,6 +27,7 @@ public class SolicitacaoService {
 
     private final SolicitacaoRepository solicitacaoRepository;
     private final HistoricoStatusRepository historicoRepository;
+    private final SecureRandom secureRandom = new SecureRandom();
 
     @Transactional
     public SolicitacaoResponseDTO criarSolicitacao(CriarSolicitacaoDTO dto) {
@@ -83,70 +86,16 @@ public class SolicitacaoService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultaResponseDTO> consultarPorQuery(String query) {
-        if (query == null || query.isBlank()) {
-            throw new BusinessException("Parâmetro de busca não pode ser vazio.");
-        }
+    public ConsultaResponseDTO consultarPorProtocoloCpf(String protocolo, String cpf) {
+        String protocoloNormalizado = protocolo.trim().toUpperCase(Locale.ROOT);
+        String cpfNormalizado = cpf.replaceAll("[^0-9]", "");
 
-        String queryNormalizada = query.trim();
-        Set<UUID> encontrados = new LinkedHashSet<>();
-        List<Solicitacao> resultado = new ArrayList<>();
+        Solicitacao solicitacao = solicitacaoRepository
+                .findByProtocoloAndTutorCpf(protocoloNormalizado, cpfNormalizado)
+                .orElseThrow(() -> new ResourceNotFoundException("Não foi possível localizar solicitação com os dados informados."));
 
-        // 1. Tentar por protocolo (exato, case-insensitive)
-        Optional<Solicitacao> porProtocolo = solicitacaoRepository.findByProtocolo(queryNormalizada.toUpperCase());
-        porProtocolo.ifPresent(s -> {
-            if (encontrados.add(s.getId())) {
-                resultado.add(s);
-            }
-        });
-
-        // 2. Tentar por CPF (apenas dígitos)
-        String somenteDigitos = queryNormalizada.replaceAll("[^0-9]", "");
-        if (!somenteDigitos.isBlank() && somenteDigitos.length() == 11) {
-            solicitacaoRepository.findByTutorCpf(somenteDigitos).forEach(s -> {
-                if (encontrados.add(s.getId())) {
-                    resultado.add(s);
-                }
-            });
-        }
-
-        // 3. Tentar por e-mail
-        if (queryNormalizada.contains("@")) {
-            solicitacaoRepository.findByTutorEmailIgnoreCase(queryNormalizada).forEach(s -> {
-                if (encontrados.add(s.getId())) {
-                    resultado.add(s);
-                }
-            });
-        }
-
-        // 4. Tentar por nome (contains)
-        if (resultado.isEmpty()) {
-            solicitacaoRepository.findByTutorNomeContainingIgnoreCase(queryNormalizada).forEach(s -> {
-                if (encontrados.add(s.getId())) {
-                    resultado.add(s);
-                }
-            });
-        }
-
-        // 5. Tentar por bairro (contains)
-        if (resultado.isEmpty()) {
-            solicitacaoRepository.findByTutorBairroContainingIgnoreCase(queryNormalizada).forEach(s -> {
-                if (encontrados.add(s.getId())) {
-                    resultado.add(s);
-                }
-            });
-        }
-
-        if (resultado.isEmpty()) {
-            throw new ResourceNotFoundException("Nenhuma solicitação encontrada para: " + query);
-        }
-
-        return resultado.stream()
-                .map(s -> {
-                    List<HistoricoStatus> historico = historicoRepository.findBySolicitacaoIdOrderByDataAsc(s.getId());
-                    return ConsultaResponseDTO.from(s, historico);
-                })
-                .collect(Collectors.toList());
+        List<HistoricoStatus> historico = historicoRepository.findBySolicitacaoIdOrderByDataAsc(solicitacao.getId());
+        return ConsultaResponseDTO.from(solicitacao, historico);
     }
 
     @Transactional(readOnly = true)
@@ -158,10 +107,14 @@ public class SolicitacaoService {
                 pageable
         );
 
-        return page.map(s -> {
-            List<HistoricoStatus> historico = historicoRepository.findBySolicitacaoIdOrderByDataAsc(s.getId());
-            return SolicitacaoResponseDTO.from(s, historico);
-        });
+        List<UUID> ids = page.getContent().stream().map(Solicitacao::getId).toList();
+        Map<UUID, List<HistoricoStatus>> historicoPorSolicitacao = buscarHistoricoAgrupado(ids);
+
+        List<SolicitacaoResponseDTO> content = page.getContent().stream()
+                .map(s -> SolicitacaoResponseDTO.from(s, historicoPorSolicitacao.getOrDefault(s.getId(), List.of())))
+                .toList();
+
+        return new PageImpl<>(content, pageable, page.getTotalElements());
     }
 
     @Transactional(readOnly = true)
@@ -253,11 +206,24 @@ public class SolicitacaoService {
             if (tentativas > 10) {
                 throw new BusinessException("Não foi possível gerar um protocolo único. Tente novamente.");
             }
-            String sufixo = String.format("%06d", new Random().nextInt(1_000_000));
+            String sufixo = String.format("%06d", secureRandom.nextInt(1_000_000));
             protocolo = "ARCA-" + ano + "-" + sufixo;
             tentativas++;
         } while (solicitacaoRepository.existsByProtocolo(protocolo));
         return protocolo;
+    }
+
+    private Map<UUID, List<HistoricoStatus>> buscarHistoricoAgrupado(List<UUID> solicitacaoIds) {
+        if (solicitacaoIds.isEmpty()) {
+            return Map.of();
+        }
+
+        return historicoRepository.findBySolicitacaoIdInOrderByDataAsc(solicitacaoIds).stream()
+                .collect(Collectors.groupingBy(
+                        h -> h.getSolicitacao().getId(),
+                        LinkedHashMap::new,
+                        Collectors.toList()
+                ));
     }
 
     private int calcularPrioridadeScore(TipoSolicitante tipo, int quantidade, boolean risco, boolean vulneravel) {

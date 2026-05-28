@@ -16,18 +16,9 @@ public interface SolicitacaoRepository extends JpaRepository<Solicitacao, UUID> 
 
     Optional<Solicitacao> findByProtocolo(String protocolo);
 
+    Optional<Solicitacao> findByProtocoloAndTutorCpf(String protocolo, String tutorCpf);
+
     boolean existsByProtocolo(String protocolo);
-
-    List<Solicitacao> findByTutorCpf(String tutorCpf);
-
-    @Query("SELECT s FROM Solicitacao s WHERE LOWER(s.tutorEmail) = LOWER(:email)")
-    List<Solicitacao> findByTutorEmailIgnoreCase(@Param("email") String email);
-
-    @Query("SELECT s FROM Solicitacao s WHERE LOWER(s.tutorNome) LIKE LOWER(CONCAT('%', :nome, '%'))")
-    List<Solicitacao> findByTutorNomeContainingIgnoreCase(@Param("nome") String nome);
-
-    @Query("SELECT s FROM Solicitacao s WHERE LOWER(s.tutorBairro) LIKE LOWER(CONCAT('%', :bairro, '%'))")
-    List<Solicitacao> findByTutorBairroContainingIgnoreCase(@Param("bairro") String bairro);
 
     @Query(value = """
             SELECT * FROM solicitacoes s

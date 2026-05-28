@@ -1,3 +1,3 @@
 INSERT INTO usuarios (email, senha_hash, role, ativo)
-VALUES ('admin@arca.serra.es.gov.br', '$2a$12$OL1jBLBZdcm2lZ/tUJqkBunqLXnrGJiPxrgI.7d0HPhMFNbRryvuq', 'ADMIN', TRUE)
+VALUES ('admin.demo@arca.local', '$2a$12$0Fcgz2/SB6Se2eWHh.JMs.DtZ4OHbFYP622vShQEcYhPrxnPWJZyy', 'ADMIN', TRUE)
 ON CONFLICT (email) DO NOTHING;

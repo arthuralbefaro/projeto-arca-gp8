@@ -64,5 +64,6 @@ public class CriarSolicitacaoDTO {
 
     private boolean areaVulneravel = false;
 
+    @Size(max = 2000, message = "Observações não podem ter mais de 2000 caracteres")
     private String observacoes;
 }

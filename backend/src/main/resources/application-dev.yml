@@ -1,0 +1,11 @@
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always

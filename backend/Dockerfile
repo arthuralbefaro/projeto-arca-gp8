@@ -7,6 +7,8 @@ RUN mvn package -DskipTests -B
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+RUN addgroup -S arca && adduser -S arca -G arca
+COPY --from=build --chown=arca:arca /app/target/*.jar app.jar
+USER arca
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

@@ -13,40 +13,118 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AuthService {
 
     private final UsuarioRepository usuarioRepository;
+    private final AuthSessionRepository authSessionRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
-    @Value("${arca.jwt.expiration-ms}")
-    private long expirationMs;
+    @Value("${arca.jwt.refresh-expiration-ms}")
+    private long refreshExpirationMs;
 
-    @Transactional(readOnly = true)
-    public AuthResponseDTO login(LoginRequestDTO dto) {
+    @Transactional
+    public AuthResult login(LoginRequestDTO dto) {
         Usuario usuario = usuarioRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new BusinessException("E-mail ou senha inválidos."));
 
         if (!usuario.isAtivo()) {
-            throw new BusinessException("Conta de usuário inativa. Entre em contato com o administrador.");
+            throw new BusinessException("E-mail ou senha inválidos.");
         }
 
         if (!passwordEncoder.matches(dto.getSenha(), usuario.getSenhaHash())) {
             throw new BusinessException("E-mail ou senha inválidos.");
         }
 
-        String token = tokenProvider.generateToken(usuario.getEmail(), usuario.getRole().name());
-        log.info("Login bem-sucedido para: {}", usuario.getEmail());
+        AuthResult result = issueSession(usuario);
+        log.info("security_event=login_success user_id={}", usuario.getId());
+        return result;
+    }
 
-        return AuthResponseDTO.builder()
-                .token(token)
-                .tokenType("Bearer")
-                .expiresIn(expirationMs / 1000)
+    @Transactional
+    public AuthResult refresh(String refreshToken) {
+        String refreshHash = refreshTokenService.hash(refreshToken);
+        AuthSession session = authSessionRepository.findByRefreshTokenHash(refreshHash)
+                .orElseThrow(() -> new BusinessException("Sessão inválida."));
+
+        LocalDateTime now = LocalDateTime.now();
+        if (!session.isAtiva(now)) {
+            session.setRevogado(true);
+            throw new BusinessException("Sessão inválida.");
+        }
+
+        String newRefreshToken = refreshTokenService.generate();
+        session.setRefreshTokenHash(refreshTokenService.hash(newRefreshToken));
+        session.setUltimoUsoEm(now);
+
+        Usuario usuario = session.getUsuario();
+        String accessToken = tokenProvider.generateAccessToken(usuario, session.getId());
+        String csrfToken = refreshTokenService.generate();
+
+        return buildResult(usuario, accessToken, newRefreshToken, csrfToken);
+    }
+
+    @Transactional
+    public void revokeByRefreshToken(String refreshToken) {
+        if (refreshToken == null || refreshToken.isBlank()) {
+            return;
+        }
+
+        authSessionRepository.findByRefreshTokenHash(refreshTokenService.hash(refreshToken))
+                .ifPresent(session -> session.setRevogado(true));
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isSessionActive(UUID sessionId) {
+        return authSessionRepository.existsByIdAndRevogadoFalseAndExpiraEmAfterAndUsuarioAtivoTrue(sessionId, LocalDateTime.now());
+    }
+
+    private AuthResult issueSession(Usuario usuario) {
+        String refreshToken = refreshTokenService.generate();
+        AuthSession session = AuthSession.builder()
+                .usuario(usuario)
+                .refreshTokenHash(refreshTokenService.hash(refreshToken))
+                .expiraEm(LocalDateTime.now().plus(Duration.ofMillis(refreshExpirationMs)))
+                .build();
+        session = authSessionRepository.save(session);
+
+        String accessToken = tokenProvider.generateAccessToken(usuario, session.getId());
+        String csrfToken = refreshTokenService.generate();
+        return buildResult(usuario, accessToken, refreshToken, csrfToken);
+    }
+
+    private AuthResult buildResult(Usuario usuario, String accessToken, String refreshToken, String csrfToken) {
+        AuthResponseDTO response = AuthResponseDTO.builder()
+                .expiresIn(tokenProvider.getAccessTokenDuration().toSeconds())
                 .email(usuario.getEmail())
                 .role(usuario.getRole().name())
                 .build();
+
+        return new AuthResult(
+                response,
+                accessToken,
+                refreshToken,
+                csrfToken,
+                tokenProvider.getAccessTokenDuration(),
+                Duration.ofMillis(refreshExpirationMs)
+        );
+    }
+
+    public record AuthResult(
+            AuthResponseDTO response,
+            String accessToken,
+            String refreshToken,
+            String csrfToken,
+            Duration accessMaxAge,
+            Duration refreshMaxAge
+    ) {
     }
 }
