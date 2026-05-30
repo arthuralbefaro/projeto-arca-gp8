@@ -8,7 +8,7 @@ export default function StatCard({ title, value, description, icon: Icon }) {
             </div>
 
             {Icon && (
-                <div className="arca-stat-icon">
+                <div className="arca-stat-icon" aria-hidden="true">
                     <Icon size={24} />
                 </div>
             )}

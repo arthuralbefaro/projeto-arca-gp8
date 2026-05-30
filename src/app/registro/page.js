@@ -133,7 +133,7 @@ export default function RegistroPage() {
             <Header />
             <Toast message={toast} onClose={() => setToast('')} />
 
-            <main className="arca-section">
+            <main className="arca-section" id="conteudo-principal">
                 <div className="arca-container">
                     <div className="arca-section-heading">
                         <span className="arca-eyebrow">
@@ -190,6 +190,8 @@ export default function RegistroPage() {
                                     value={form.tutorNome}
                                     onChange={(event) => updateField('tutorNome', event.target.value)}
                                     placeholder="Ex.: Maria Souza"
+                                    autoComplete="name"
+                                    required
                                     disabled={loading}
                                 />
                             </label>
@@ -202,6 +204,10 @@ export default function RegistroPage() {
                                     onChange={(event) => updateField('tutorCpf', maskCPF(event.target.value))}
                                     placeholder="000.000.000-00"
                                     className={cpfIsInvalid ? 'arca-input-error' : ''}
+                                    aria-invalid={cpfIsInvalid}
+                                    autoComplete="off"
+                                    inputMode="numeric"
+                                    required
                                     disabled={loading}
                                 />
                                 {cpfIsInvalid && (
@@ -219,6 +225,7 @@ export default function RegistroPage() {
                                     value={form.tutorEmail}
                                     onChange={(event) => updateField('tutorEmail', event.target.value)}
                                     placeholder="email@exemplo.com"
+                                    autoComplete="email"
                                     disabled={loading}
                                 />
                             </label>
@@ -229,6 +236,9 @@ export default function RegistroPage() {
                                     value={form.tutorTelefone}
                                     onChange={(event) => updateField('tutorTelefone', maskPhone(event.target.value))}
                                     placeholder="(27) 99999-9999"
+                                    autoComplete="tel"
+                                    inputMode="tel"
+                                    required
                                     disabled={loading}
                                 />
                             </label>
@@ -252,6 +262,9 @@ export default function RegistroPage() {
                                         }}
                                         onBlur={(event) => searchCep(event.target.value)}
                                         placeholder="00000-000"
+                                        autoComplete="postal-code"
+                                        inputMode="numeric"
+                                        required
                                         disabled={loading}
                                     />
                                     {cepLoading && <Loader2 className="arca-spin" size={18} />}
@@ -263,6 +276,7 @@ export default function RegistroPage() {
                                 <select
                                     value={form.tutorBairro}
                                     onChange={(event) => updateField('tutorBairro', event.target.value)}
+                                    required
                                     disabled={loading}
                                 >
                                     <option value="">Selecione</option>
@@ -285,6 +299,7 @@ export default function RegistroPage() {
                                     value={form.tutorEndereco}
                                     onChange={(event) => updateField('tutorEndereco', event.target.value)}
                                     placeholder="Rua, número e complemento"
+                                    autoComplete="street-address"
                                     disabled={loading}
                                 />
                             </label>

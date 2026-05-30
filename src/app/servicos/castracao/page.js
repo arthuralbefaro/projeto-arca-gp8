@@ -88,7 +88,7 @@ export default function CastracaoPage() {
             <Header />
             <Toast message={toast} onClose={() => setToast('')} />
 
-            <main className="arca-section">
+            <main className="arca-section" id="conteudo-principal">
                 <div className="arca-container">
                     <div className="arca-section-heading">
                         <span className="arca-eyebrow">
@@ -142,6 +142,8 @@ export default function CastracaoPage() {
                                     value={form.tutorNome}
                                     onChange={(event) => updateField('tutorNome', event.target.value)}
                                     placeholder="Ex.: Maria Souza"
+                                    autoComplete="name"
+                                    required
                                     disabled={loading}
                                 />
                             </label>
@@ -152,6 +154,9 @@ export default function CastracaoPage() {
                                     value={form.tutorCpf}
                                     onChange={(event) => updateField('tutorCpf', maskCPF(event.target.value))}
                                     placeholder="000.000.000-00"
+                                    autoComplete="off"
+                                    inputMode="numeric"
+                                    required
                                     disabled={loading}
                                 />
                             </label>
@@ -163,6 +168,7 @@ export default function CastracaoPage() {
                                     value={form.tutorEmail}
                                     onChange={(event) => updateField('tutorEmail', event.target.value)}
                                     placeholder="email@exemplo.com"
+                                    autoComplete="email"
                                     disabled={loading}
                                 />
                             </label>
@@ -173,6 +179,9 @@ export default function CastracaoPage() {
                                     value={form.tutorTelefone}
                                     onChange={(event) => updateField('tutorTelefone', maskPhone(event.target.value))}
                                     placeholder="(27) 99999-9999"
+                                    autoComplete="tel"
+                                    inputMode="tel"
+                                    required
                                     disabled={loading}
                                 />
                             </label>
@@ -182,6 +191,7 @@ export default function CastracaoPage() {
                                 <select
                                     value={form.tutorBairro}
                                     onChange={(event) => updateField('tutorBairro', event.target.value)}
+                                    required
                                     disabled={loading}
                                 >
                                     <option value="">Selecione</option>
@@ -197,6 +207,7 @@ export default function CastracaoPage() {
                                     value={form.tutorEndereco}
                                     onChange={(event) => updateField('tutorEndereco', event.target.value)}
                                     placeholder="Rua, número e complemento"
+                                    autoComplete="street-address"
                                     disabled={loading}
                                 />
                             </label>
@@ -238,6 +249,7 @@ export default function CastracaoPage() {
                                     value={form.animalNome}
                                     onChange={(event) => updateField('animalNome', event.target.value)}
                                     placeholder="Ex.: Mel"
+                                    required
                                     disabled={loading}
                                 />
                             </label>

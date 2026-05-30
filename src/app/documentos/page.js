@@ -55,7 +55,7 @@ export default function DocumentosPage() {
       <div className="arca-page">
         <Header />
 
-        <main className="arca-documents-page">
+        <main className="arca-documents-page" id="conteudo-principal">
           <section className="arca-container">
             <div className="arca-documents-hero">
             <span className="arca-eyebrow">

@@ -1,0 +1,13 @@
+node_modules
+.next
+out
+coverage
+.git
+.idea
+.vscode
+backend/target
+*.log
+.env
+.env.*
+!.env.example
+README-ACADEMICO.md

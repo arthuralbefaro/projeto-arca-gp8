@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { assetPath } from '@/lib/assets';
 import {
   ArrowRight,
   BadgeCheck,
@@ -34,7 +36,7 @@ const quickActions = [
   {
     title: 'Consultar protocolo',
     description:
-        'Acompanhe status, pendências e próxima etapa usando CPF, e-mail ou protocolo.',
+        'Acompanhe status, pendências e próxima etapa usando protocolo e CPF do solicitante.',
     href: '/consulta',
     icon: SearchCheck,
   },
@@ -119,7 +121,7 @@ export default function Home() {
       <div className="arca-page">
         <Header />
 
-        <main>
+        <main id="conteudo-principal">
           <section className="arca-hero">
             <div className="arca-container arca-hero-inner">
               <div>
@@ -160,28 +162,41 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="arca-hero-card">
-                <div className="arca-pet-visual">
-                  <span className="arca-orbit arca-orbit-one" />
-                  <span className="arca-orbit arca-orbit-two" />
-                  <span className="arca-orbit arca-orbit-three" />
-                  <span className="arca-orbit arca-orbit-four" />
-                  <span className="arca-core-shape" />
+              <div className="arca-hero-card" aria-label="Visão institucional do Programa ARCA">
+                <div className="arca-hero-card-header">
+                  <div>
+                    <strong>Portal ARCA</strong>
+                    <span>Cadastro, triagem e acompanhamento em ambiente único</span>
+                  </div>
+
+                  <span className="arca-live-dot" aria-hidden="true" />
                 </div>
 
-                <div className="arca-floating-card one">
-                  <strong>Cadastro com protocolo</strong>
-                  <span>O tutor recebe uma identificação para acompanhar o processo.</span>
+                <div className="arca-hero-media">
+                  <Image
+                      src={assetPath('/images/animais.png')}
+                      alt="Cão e gato representando o atendimento animal do Programa ARCA"
+                      width={780}
+                      height={354}
+                      priority
+                  />
                 </div>
 
-                <div className="arca-floating-card two">
-                  <strong>Triagem organizada</strong>
-                  <span>Solicitações podem ser analisadas por status, bairro e prioridade.</span>
-                </div>
+                <div className="arca-hero-metrics">
+                  <div className="arca-hero-metric">
+                    <strong>LGPD</strong>
+                    <span>Consulta protegida por protocolo e CPF</span>
+                  </div>
 
-                <div className="arca-floating-card three">
-                  <strong>Atendimento orientado</strong>
-                  <span>Fluxo claro para documentos, pendências e próximos passos.</span>
+                  <div className="arca-hero-metric">
+                    <strong>24h</strong>
+                    <span>Acompanhamento digital do andamento</span>
+                  </div>
+
+                  <div className="arca-hero-metric">
+                    <strong>Serra</strong>
+                    <span>Atendimento orientado ao cidadão</span>
+                  </div>
                 </div>
               </div>
             </div>

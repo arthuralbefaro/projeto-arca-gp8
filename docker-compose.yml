@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -7,7 +5,7 @@ services:
     environment:
       POSTGRES_DB: arca_db
       POSTGRES_USER: arca_user
-      POSTGRES_PASSWORD: arca_pass
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-arca_demo_pass}
     ports:
       - "5432:5432"
     volumes:
@@ -28,12 +26,37 @@ services:
     environment:
       DATABASE_URL: jdbc:postgresql://postgres:5432/arca_db
       DATABASE_USER: arca_user
-      DATABASE_PASS: arca_pass
-      JWT_SECRET: arca-super-secret-key-change-in-production-256-bits-minimum
-      JWT_EXPIRATION_MS: 86400000
-      CORS_ALLOWED_ORIGINS: http://localhost:3000
+      DATABASE_PASS: ${POSTGRES_PASSWORD:-arca_demo_pass}
+      JWT_SECRET: ${JWT_SECRET:-demo-only-change-before-production-32-bytes-minimum}
+      JWT_ISSUER: ${JWT_ISSUER:-arca-api}
+      JWT_AUDIENCE: ${JWT_AUDIENCE:-arca-admin}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-900000}
+      JWT_REFRESH_EXPIRATION_MS: ${JWT_REFRESH_EXPIRATION_MS:-28800000}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      COOKIE_SAME_SITE: ${COOKIE_SAME_SITE:-Lax}
     depends_on:
       postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8080}
+        NEXT_PUBLIC_BASE_PATH: ${NEXT_PUBLIC_BASE_PATH:-}
+    container_name: arca_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
         condition: service_healthy
     restart: unless-stopped
 

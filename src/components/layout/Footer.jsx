@@ -1,5 +1,7 @@
 import Link from 'next/link';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import Image from 'next/image';
+import { Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
+import { assetPath } from '@/lib/assets';
 
 export default function Footer() {
   return (
@@ -9,10 +11,12 @@ export default function Footer() {
             <div>
               <div className="arca-brand" style={{ marginBottom: 18 }}>
               <span className="arca-brand-mark">
-                <img
-                    src="/projeto-arca-gp8/logo-serra.jpg"
+                <Image
+                    src={assetPath('/logo-serra.jpg')}
                     alt="Prefeitura da Serra"
                     className="arca-brand-logo"
+                    width={44}
+                    height={44}
                 />
               </span>
 
@@ -24,7 +28,7 @@ export default function Footer() {
 
               <p>
                 Plataforma digital de apoio ao cadastro, triagem e acompanhamento
-                de solicitações relacionadas ao atendimento animal no município.
+                de solicitações relacionadas ao atendimento animal no município da Serra.
               </p>
             </div>
 
@@ -56,14 +60,16 @@ export default function Footer() {
                 <MapPin size={16} /> Serra/ES
               </span>
 
-                <Link href="/admin/relatorios">Painel demo</Link>
+                <Link href="/admin/relatorios">Painel administrativo</Link>
               </div>
             </div>
           </div>
 
           <div className="arca-footer-bottom">
-            <span>Programa ARCA — Protótipo front-end com dados simulados.</span>
-            <span>Projeto acadêmico | Grupo 8</span>
+            <span>Programa ARCA — Prefeitura Municipal da Serra.</span>
+            <span>
+              <ShieldCheck size={14} /> Ambiente institucional com acesso administrativo protegido
+            </span>
           </div>
         </div>
       </footer>

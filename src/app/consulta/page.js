@@ -5,7 +5,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import StatusTimeline from '@/components/ui/StatusTimeline';
 import { solicitacoesApi, ApiError } from '@/lib/api';
-import { formatDateBR } from '@/lib/arca-data';
+import { formatDateBR, maskCPF, onlyNumbers } from '@/lib/arca-data';
 import { Search, ShieldCheck } from 'lucide-react';
 
 const ESPECIE_LABELS = {
@@ -15,7 +15,8 @@ const ESPECIE_LABELS = {
 };
 
 export default function ConsultaPage() {
-    const [query, setQuery] = useState('');
+    const [protocolo, setProtocolo] = useState('');
+    const [cpf, setCpf] = useState('');
     const [results, setResults] = useState([]);
     const [searched, setSearched] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -23,14 +24,20 @@ export default function ConsultaPage() {
 
     async function handleSearch(event) {
         event.preventDefault();
-        if (!query.trim()) return;
+        if (!protocolo.trim() || onlyNumbers(cpf).length !== 11) {
+            setError('Informe protocolo e CPF para consultar.');
+            return;
+        }
 
         setLoading(true);
         setError('');
         setSearched(false);
 
         try {
-            const data = await solicitacoesApi.consultar(query.trim());
+            const data = await solicitacoesApi.consultar({
+                protocolo: protocolo.trim().toUpperCase(),
+                cpf: onlyNumbers(cpf),
+            });
             setResults(Array.isArray(data) ? data : [data]);
             setSearched(true);
         } catch (err) {
@@ -53,7 +60,7 @@ export default function ConsultaPage() {
         <div className="arca-page">
             <Header />
 
-            <main className="arca-section">
+            <main className="arca-section" id="conteudo-principal">
                 <div className="arca-container">
                     <div className="arca-section-heading">
                         <span className="arca-eyebrow">
@@ -64,23 +71,50 @@ export default function ConsultaPage() {
                         <h1>Acompanhe sua solicitação.</h1>
 
                         <p>
-                            Pesquise pelo protocolo, CPF, e-mail ou nome do tutor.
+                            Informe o protocolo e o CPF do solicitante para acompanhar o atendimento.
                         </p>
                     </div>
 
-                    <form className="arca-search-card" onSubmit={handleSearch}>
-                        <input
-                            value={query}
-                            onChange={(event) => setQuery(event.target.value)}
-                            placeholder="Digite o protocolo, CPF, e-mail ou nome"
-                            disabled={loading}
-                        />
+                    <form className="arca-search-card" onSubmit={handleSearch} aria-describedby="consulta-seguranca">
+                        <label className="arca-search-field">
+                            <span>Protocolo</span>
+                            <input
+                                value={protocolo}
+                                onChange={(event) => setProtocolo(event.target.value)}
+                                placeholder="ARCA-2026-000000"
+                                disabled={loading}
+                                autoComplete="off"
+                                inputMode="text"
+                            />
+                        </label>
+
+                        <label className="arca-search-field">
+                            <span>CPF do solicitante</span>
+                            <input
+                                value={cpf}
+                                onChange={(event) => setCpf(maskCPF(event.target.value))}
+                                placeholder="000.000.000-00"
+                                disabled={loading}
+                                autoComplete="off"
+                                inputMode="numeric"
+                            />
+                        </label>
 
                         <button type="submit" className="arca-btn arca-btn-primary" disabled={loading}>
                             {loading ? 'Buscando...' : 'Consultar'}
                             <Search size={18} />
                         </button>
                     </form>
+
+                    <p className="arca-security-note" id="consulta-seguranca">
+                        Por segurança, a consulta exige a combinação exata entre protocolo e CPF.
+                    </p>
+
+                    {loading && (
+                        <div className="arca-results-list" aria-live="polite">
+                            <div className="arca-skeleton-card" />
+                        </div>
+                    )}
 
                     {error && (
                         <div className="arca-empty-state">
@@ -90,7 +124,7 @@ export default function ConsultaPage() {
                         </div>
                     )}
 
-                    {searched && results.length === 0 && !error && (
+                    {searched && results.length === 0 && !error && !loading && (
                         <div className="arca-empty-state">
                             <ShieldCheck size={42} />
                             <h2>Nenhuma solicitação encontrada</h2>
@@ -100,7 +134,7 @@ export default function ConsultaPage() {
                         </div>
                     )}
 
-                    <div className="arca-results-list">
+                    <div className="arca-results-list" aria-live="polite">
                         {results.map((item) => (
                             <article className="arca-request-detail" key={item.id}>
                                 <div className="arca-request-header">

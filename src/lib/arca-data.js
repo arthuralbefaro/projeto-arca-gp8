@@ -1,8 +1,3 @@
-export const STORAGE_KEYS = {
-    requests: 'arca-requests',
-    adminAuth: 'arca-admin-auth',
-};
-
 export const STATUS_FLOW = [
     {
         key: 'recebido',
@@ -44,8 +39,6 @@ export const FINAL_STATUS = [
     },
 ];
 
-export const STATUS_OPTIONS = [...STATUS_FLOW, ...FINAL_STATUS];
-
 export const BAIRROS_SERRA = [
     'Alterosas',
     'Barcelona',
@@ -75,14 +68,6 @@ export const BAIRROS_SERRA = [
     'Valparaíso',
 ];
 
-export function buildProtocol() {
-    const year = new Date().getFullYear();
-    const random = Math.floor(1000 + Math.random() * 9000);
-    const stamp = String(Date.now()).slice(-4);
-
-    return `ARCA-${year}-${stamp}${random}`;
-}
-
 export function formatDateBR(dateValue) {
     if (!dateValue) return '-';
 
@@ -90,10 +75,6 @@ export function formatDateBR(dateValue) {
         dateStyle: 'short',
         timeStyle: 'short',
     }).format(new Date(dateValue));
-}
-
-export function getStatusMeta(status) {
-    return STATUS_OPTIONS.find((item) => item.key === status) || STATUS_FLOW[0];
 }
 
 export function getStatusIndex(status) {
@@ -165,146 +146,3 @@ export function maskPhone(value) {
         .replace(/(\d{2})(\d)/, '($1) $2')
         .replace(/(\d{5})(\d)/, '$1-$2');
 }
-
-export function calculatePriorityScore(data) {
-    let score = 0;
-
-    if (data.requesterType === 'cadunico') score += 3;
-    if (data.requesterType === 'ong') score += 3;
-    if (data.requesterType === 'protetor') score += 2;
-    if (Number(data.quantity || 1) >= 3) score += 2;
-    if (data.riskSituation === 'sim') score += 2;
-    if (data.vulnerableArea === 'sim') score += 1;
-
-    return score;
-}
-
-export function getPriorityLabel(score) {
-    if (score >= 5) return 'Alta';
-    if (score >= 3) return 'Média';
-    return 'Baixa';
-}
-
-export const DEMO_REQUESTS = [
-    {
-        id: 'demo-1',
-        protocol: 'ARCA-2026-0001',
-        type: 'castracao',
-        tutorName: 'Maria Souza',
-        cpf: '123.456.789-00',
-        email: 'maria.souza@email.com',
-        phone: '(27) 99999-1111',
-        bairro: 'Feu Rosa',
-        address: 'Rua das Flores, 120',
-        requesterType: 'cadunico',
-        service: 'Solicitação de castração',
-        animalName: 'Mel',
-        species: 'Cachorro',
-        sex: 'Fêmea',
-        quantity: 1,
-        vaccinated: 'sim',
-        riskSituation: 'nao',
-        vulnerableArea: 'sim',
-        notes: 'Família cadastrada em programa social.',
-        status: 'triagem',
-        priorityScore: 4,
-        priorityLabel: 'Média',
-        createdAt: '2026-05-21T10:30:00.000Z',
-        history: [
-            {
-                status: 'recebido',
-                date: '2026-05-21T10:30:00.000Z',
-                note: 'Solicitação registrada.',
-            },
-            {
-                status: 'triagem',
-                date: '2026-05-21T11:10:00.000Z',
-                note: 'Cadastro encaminhado para análise.',
-            },
-        ],
-    },
-    {
-        id: 'demo-2',
-        protocol: 'ARCA-2026-0002',
-        type: 'castracao',
-        tutorName: 'João Almeida',
-        cpf: '987.654.321-00',
-        email: 'joao.almeida@email.com',
-        phone: '(27) 98888-2222',
-        bairro: 'Laranjeiras',
-        address: 'Avenida Central, 450',
-        requesterType: 'tutor',
-        service: 'Solicitação de castração',
-        animalName: 'Thor',
-        species: 'Gato',
-        sex: 'Macho',
-        quantity: 1,
-        vaccinated: 'sim',
-        riskSituation: 'nao',
-        vulnerableArea: 'nao',
-        notes: 'Tutor solicitou atendimento individual.',
-        status: 'aprovado',
-        priorityScore: 0,
-        priorityLabel: 'Baixa',
-        createdAt: '2026-05-20T14:00:00.000Z',
-        history: [
-            {
-                status: 'recebido',
-                date: '2026-05-20T14:00:00.000Z',
-                note: 'Solicitação registrada.',
-            },
-            {
-                status: 'triagem',
-                date: '2026-05-20T15:00:00.000Z',
-                note: 'Dados analisados.',
-            },
-            {
-                status: 'aprovado',
-                date: '2026-05-21T09:00:00.000Z',
-                note: 'Solicitação aprovada.',
-            },
-        ],
-    },
-    {
-        id: 'demo-3',
-        protocol: 'ARCA-2026-0003',
-        type: 'cadastro_tutor',
-        tutorName: 'ONG Patinhas da Serra',
-        cpf: '000.111.222-33',
-        email: 'contato@patinhas.org',
-        phone: '(27) 97777-3333',
-        bairro: 'Jacaraípe',
-        address: 'Rua dos Animais, 80',
-        requesterType: 'ong',
-        service: 'Cadastro de tutor/protetor',
-        animalName: 'Atendimento coletivo',
-        species: 'Cães e gatos',
-        sex: 'Diversos',
-        quantity: 8,
-        vaccinated: 'parcial',
-        riskSituation: 'sim',
-        vulnerableArea: 'sim',
-        notes: 'Demanda coletiva de animais resgatados.',
-        status: 'pendente',
-        priorityScore: 8,
-        priorityLabel: 'Alta',
-        createdAt: '2026-05-18T08:40:00.000Z',
-        history: [
-            {
-                status: 'recebido',
-                date: '2026-05-18T08:40:00.000Z',
-                note: 'Cadastro recebido.',
-            },
-            {
-                status: 'triagem',
-                date: '2026-05-18T10:20:00.000Z',
-                note: 'Demanda coletiva identificada.',
-            },
-            {
-                status: 'pendente',
-                date: '2026-05-19T09:30:00.000Z',
-                note: 'Solicitado envio de documentação complementar.',
-            },
-        ],
-    },
-];

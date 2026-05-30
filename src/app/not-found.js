@@ -8,7 +8,7 @@ export default function NotFound() {
         <div className="arca-page">
             <Header />
 
-            <main className="arca-section">
+            <main className="arca-section" id="conteudo-principal">
                 <div className="arca-container">
                     <section className="arca-empty-state">
                         <h1>Página não encontrada</h1>

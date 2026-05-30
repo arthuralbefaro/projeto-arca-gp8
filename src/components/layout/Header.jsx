@@ -1,13 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { assetPath } from '@/lib/assets';
 import {
   FileText,
   LogIn,
   Menu,
-  PawPrint,
-  Search,
   ShieldCheck,
   UserPlus,
   X,
@@ -23,32 +24,59 @@ const navLinks = [
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   function closeMenu() {
     setIsOpen(false);
   }
 
+  function isActive(href) {
+    if (href === '/') return pathname === '/';
+    return pathname?.startsWith(href);
+  }
+
   return (
       <header className="arca-header">
+        <a href="#conteudo-principal" className="arca-skip-link">
+          Ir para o conteúdo principal
+        </a>
+
+        <div className="arca-gov-strip">
+          <div className="arca-gov-strip-inner">
+            <span>
+              <ShieldCheck size={14} />
+              Prefeitura Municipal da Serra
+            </span>
+            <span>Serviço digital institucional</span>
+          </div>
+        </div>
+
         <div className="arca-header-inner">
           <Link href="/" className="arca-brand" onClick={closeMenu}>
           <span className="arca-brand-mark">
-            <img
-                src="/projeto-arca-gp8/logo-serra.jpg"
+            <Image
+                src={assetPath('/logo-serra.jpg')}
                 alt="Prefeitura da Serra"
                 className="arca-brand-logo"
+                width={44}
+                height={44}
+                priority
             />
           </span>
 
             <span className="arca-brand-text">
             <strong>Programa ARCA</strong>
-            <span>Atendimento animal digital</span>
+            <span>Atendimento animal da Serra</span>
           </span>
           </Link>
 
           <nav className="arca-nav" aria-label="Navegação principal">
             {navLinks.map((link) => (
-                <Link href={link.href} key={link.href}>
+                <Link
+                    href={link.href}
+                    key={link.href}
+                    aria-current={isActive(link.href) ? 'page' : undefined}
+                >
                   {link.label}
                 </Link>
             ))}
@@ -65,6 +93,8 @@ export default function Header() {
                 className="arca-menu-btn"
                 onClick={() => setIsOpen((current) => !current)}
                 aria-label={isOpen ? 'Fechar menu' : 'Abrir menu'}
+                aria-expanded={isOpen}
+                aria-controls="arca-menu-mobile"
             >
               {isOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
@@ -72,19 +102,20 @@ export default function Header() {
         </div>
 
         {isOpen && (
-            <nav className="arca-mobile-menu" aria-label="Menu mobile">
+            <nav className="arca-mobile-menu" id="arca-menu-mobile" aria-label="Menu mobile">
               {navLinks.map((link) => (
-                  <Link href={link.href} key={link.href} onClick={closeMenu}>
+                  <Link
+                      href={link.href}
+                      key={link.href}
+                      onClick={closeMenu}
+                      aria-current={isActive(link.href) ? 'page' : undefined}
+                  >
                     {link.label}
                   </Link>
               ))}
 
               <Link href="/registro" onClick={closeMenu}>
                 <UserPlus size={17} /> Cadastro do tutor
-              </Link>
-
-              <Link href="/consulta" onClick={closeMenu}>
-                <Search size={17} /> Consultar protocolo
               </Link>
 
               <Link href="/documentos" onClick={closeMenu}>

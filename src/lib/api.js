@@ -1,37 +1,50 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-const TOKEN_KEY = 'arca-jwt-token';
+const CSRF_COOKIE = 'arca_csrf';
 
-function getToken() {
-    if (typeof window === 'undefined') return null;
-    return localStorage.getItem(TOKEN_KEY);
+function getCookie(name) {
+    if (typeof document === 'undefined') return null;
+
+    return document.cookie
+        .split('; ')
+        .find((row) => row.startsWith(`${name}=`))
+        ?.split('=')[1] ?? null;
 }
 
-function setToken(token) {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem(TOKEN_KEY, token);
+function isUnsafeMethod(method) {
+    return !['GET', 'HEAD', 'OPTIONS'].includes(String(method || 'GET').toUpperCase());
 }
 
-function removeToken() {
-    if (typeof window === 'undefined') return;
-    localStorage.removeItem(TOKEN_KEY);
+function createCorrelationId() {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        return crypto.randomUUID();
+    }
+
+    return `arca-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
-async function request(path, options = {}) {
-    const token = getToken();
+async function request(path, options = {}, retryOnUnauthorized = true) {
+    const method = options.method || 'GET';
+    const csrfToken = getCookie(CSRF_COOKIE);
     const headers = {
         'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        'X-Correlation-ID': createCorrelationId(),
+        ...(isUnsafeMethod(method) && csrfToken ? { 'X-ARCA-CSRF': decodeURIComponent(csrfToken) } : {}),
         ...options.headers,
     };
 
     const response = await fetch(`${API_BASE_URL}${path}`, {
         ...options,
+        method,
         headers,
+        credentials: 'include',
     });
 
-    if (response.status === 401) {
-        removeToken();
-        throw new ApiError(401, 'Sessão expirada. Faça login novamente.');
+    if (response.status === 401
+        && retryOnUnauthorized
+        && path !== '/api/auth/login'
+        && path !== '/api/auth/refresh') {
+        await authApi.refresh();
+        return request(path, options, false);
     }
 
     const body = await response.json().catch(() => null);
@@ -58,11 +71,28 @@ export const authApi = {
             body: JSON.stringify({ email, senha }),
         }),
 
-    logout: () => removeToken(),
+    refresh: () =>
+        request('/api/auth/refresh', {
+            method: 'POST',
+        }, false),
 
-    isAuthenticated: () => Boolean(getToken()),
+    logout: () =>
+        request('/api/auth/logout', {
+            method: 'POST',
+        }, false),
 
-    saveToken: (token) => setToken(token),
+    me: () => request('/api/auth/me'),
+
+    isAuthenticated: async () => {
+        try {
+            await authApi.me();
+            return true;
+        } catch {
+            return false;
+        }
+    },
+
+    saveToken: () => {},
 };
 
 export const solicitacoesApi = {
@@ -72,8 +102,11 @@ export const solicitacoesApi = {
             body: JSON.stringify(data),
         }),
 
-    consultar: (query) =>
-        request(`/api/solicitacoes/consulta?q=${encodeURIComponent(query)}`),
+    consultar: ({ protocolo, cpf }) =>
+        request('/api/solicitacoes/consulta', {
+            method: 'POST',
+            body: JSON.stringify({ protocolo, cpf }),
+        }),
 };
 
 export const adminApi = {

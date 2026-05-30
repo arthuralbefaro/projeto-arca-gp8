@@ -47,7 +47,7 @@ export default function ComoFuncionaPage() {
       <div className="arca-page">
         <Header />
 
-        <main className="arca-section">
+        <main className="arca-section" id="conteudo-principal">
           <div className="arca-container">
             <div className="arca-section-heading">
             <span className="arca-eyebrow">

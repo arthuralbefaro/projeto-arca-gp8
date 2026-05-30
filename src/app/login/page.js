@@ -26,8 +26,7 @@ export default function LoginPage() {
         setLoading(true);
 
         try {
-            const data = await authApi.login(form.email, form.senha);
-            authApi.saveToken(data.token);
+            await authApi.login(form.email, form.senha);
             router.push('/admin/relatorios');
         } catch (error) {
             const message =
@@ -45,7 +44,7 @@ export default function LoginPage() {
             <Header />
             <Toast message={toast} onClose={() => setToast('')} />
 
-            <main className="arca-section">
+            <main className="arca-section" id="conteudo-principal">
                 <div className="arca-container arca-auth-wrap">
                     <section className="arca-auth-card">
                         <span className="arca-card-icon">
@@ -66,6 +65,7 @@ export default function LoginPage() {
                                     value={form.email}
                                     onChange={(event) => updateField('email', event.target.value)}
                                     required
+                                    autoComplete="username"
                                     disabled={loading}
                                 />
                             </label>
@@ -77,6 +77,7 @@ export default function LoginPage() {
                                     value={form.senha}
                                     onChange={(event) => updateField('senha', event.target.value)}
                                     required
+                                    autoComplete="current-password"
                                     disabled={loading}
                                 />
                             </label>
