@@ -5,8 +5,10 @@ import br.gov.serra.arca.modules.admin.dto.DashboardStatsDTO;
 import br.gov.serra.arca.modules.solicitacoes.SolicitacaoService;
 import br.gov.serra.arca.modules.solicitacoes.dto.AlterarStatusDTO;
 import br.gov.serra.arca.modules.solicitacoes.dto.SolicitacaoResponseDTO;
+import br.gov.serra.arca.modules.solicitacoes.dto.SolicitacaoResumoDTO;
 import br.gov.serra.arca.security.ClientIpResolver;
 import br.gov.serra.arca.security.RateLimitService;
+import br.gov.serra.arca.security.SecurityAuditService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -36,13 +38,14 @@ public class AdminController {
     private final SolicitacaoService solicitacaoService;
     private final RateLimitService rateLimitService;
     private final ClientIpResolver clientIpResolver;
+    private final SecurityAuditService securityAuditService;
 
     @GetMapping("/solicitacoes")
     @Operation(
             summary = "Listar solicitações",
             description = "Lista todas as solicitações com filtros opcionais e paginação."
     )
-    public ResponseEntity<ApiResponseDTO<Page<SolicitacaoResponseDTO>>> listarSolicitacoes(
+    public ResponseEntity<ApiResponseDTO<Page<SolicitacaoResumoDTO>>> listarSolicitacoes(
             @Parameter(description = "Filtrar por status") @RequestParam(required = false) String status,
             @Parameter(description = "Filtrar por bairro") @RequestParam(required = false) String bairro,
             @Parameter(description = "Filtrar por tipo de solicitante") @RequestParam(required = false) String tipoSolicitante,
@@ -52,15 +55,17 @@ public class AdminController {
         int safePage = Math.max(page, 0);
         int safeSize = Math.min(Math.max(size, 1), MAX_PAGE_SIZE);
         Pageable pageable = PageRequest.of(safePage, safeSize);
-        Page<SolicitacaoResponseDTO> resultado = solicitacaoService.listarAdmin(status, bairro, tipoSolicitante, pageable);
+        Page<SolicitacaoResumoDTO> resultado = solicitacaoService.listarAdmin(status, bairro, tipoSolicitante, pageable);
         return ResponseEntity.ok(ApiResponseDTO.ok(resultado));
     }
 
     @GetMapping("/solicitacoes/{id}")
     @Operation(summary = "Obter solicitação por ID")
     public ResponseEntity<ApiResponseDTO<SolicitacaoResponseDTO>> obterSolicitacao(
-            @PathVariable UUID id) {
+            @PathVariable UUID id,
+            HttpServletRequest request) {
         SolicitacaoResponseDTO solicitacao = solicitacaoService.obterPorId(id);
+        securityAuditService.piiView(clientIpResolver.resolve(request), request.getHeader("User-Agent"), id);
         return ResponseEntity.ok(ApiResponseDTO.ok(solicitacao));
     }
 
@@ -75,7 +80,7 @@ public class AdminController {
             HttpServletRequest request) {
         String clientIp = clientIpResolver.resolve(request);
         rateLimitService.check("admin-mutation", clientIp, RateLimitService.ADMIN_MUTATION);
-        SolicitacaoResponseDTO atualizada = solicitacaoService.alterarStatus(id, dto);
+        SolicitacaoResponseDTO atualizada = solicitacaoService.alterarStatus(id, dto, clientIp, request.getHeader("User-Agent"));
         return ResponseEntity.ok(ApiResponseDTO.ok(atualizada, "Status alterado para: " + dto.getStatus()));
     }
 

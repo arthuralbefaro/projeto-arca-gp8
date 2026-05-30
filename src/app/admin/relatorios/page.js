@@ -187,10 +187,20 @@ export default function AdminRelatoriosPage() {
         };
     }, [auth, filters, page, pageSize, loadRequests, loadStats]);
 
+    async function openDetails(id) {
+        try {
+            const detalhe = await adminApi.obter(id);
+            setSelected(detalhe);
+        } catch (error) {
+            setToast(error instanceof ApiError ? error.message : 'Não foi possível carregar os detalhes.');
+        }
+    }
+
     async function handleStatusChange(id, status) {
         try {
             const updated = await adminApi.alterarStatus(id, status, 'Status atualizado pelo painel administrativo.');
-            setRequests((prev) => prev.map((item) => item.id === id ? updated : item));
+            setRequests((prev) => prev.map((item) =>
+                item.id === id ? { ...item, status: updated.status, statusLabel: updated.statusLabel } : item));
             if (selected?.id === id) setSelected(updated);
             setToast('Status atualizado com sucesso.');
             await loadStats();
@@ -527,7 +537,7 @@ export default function AdminRelatoriosPage() {
                                                         <button
                                                             type="button"
                                                             className="arca-mini-btn"
-                                                            onClick={() => setSelected(item)}
+                                                            onClick={() => openDetails(item.id)}
                                                         >
                                                             Ver detalhes
                                                         </button>

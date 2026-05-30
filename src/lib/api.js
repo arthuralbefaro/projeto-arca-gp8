@@ -51,16 +51,18 @@ async function request(path, options = {}, retryOnUnauthorized = true) {
 
     if (!response.ok) {
         const message = body?.message || `Erro ${response.status}`;
-        throw new ApiError(response.status, message);
+        throw new ApiError(response.status, message, body?.errorCode ?? null, body?.errors ?? []);
     }
 
     return body?.data ?? body;
 }
 
 export class ApiError extends Error {
-    constructor(status, message) {
+    constructor(status, message, errorCode = null, errors = []) {
         super(message);
         this.status = status;
+        this.errorCode = errorCode;
+        this.errors = errors;
     }
 }
 

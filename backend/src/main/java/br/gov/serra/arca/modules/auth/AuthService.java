@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -73,13 +74,16 @@ public class AuthService {
     }
 
     @Transactional
-    public void revokeByRefreshToken(String refreshToken) {
+    public Optional<String> revokeByRefreshToken(String refreshToken) {
         if (refreshToken == null || refreshToken.isBlank()) {
-            return;
+            return Optional.empty();
         }
 
-        authSessionRepository.findByRefreshTokenHash(refreshTokenService.hash(refreshToken))
-                .ifPresent(session -> session.setRevogado(true));
+        return authSessionRepository.findByRefreshTokenHash(refreshTokenService.hash(refreshToken))
+                .map(session -> {
+                    session.setRevogado(true);
+                    return session.getUsuario().getEmail();
+                });
     }
 
     @Transactional(readOnly = true)

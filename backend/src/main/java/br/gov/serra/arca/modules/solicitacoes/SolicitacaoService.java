@@ -6,11 +6,15 @@ import br.gov.serra.arca.modules.admin.dto.DashboardStatsDTO;
 import br.gov.serra.arca.modules.historico.HistoricoStatus;
 import br.gov.serra.arca.modules.historico.HistoricoStatusRepository;
 import br.gov.serra.arca.modules.solicitacoes.dto.*;
+import br.gov.serra.arca.modules.usuarios.Usuario;
+import br.gov.serra.arca.modules.usuarios.UsuarioRepository;
+import br.gov.serra.arca.security.SecurityAuditService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +22,6 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,8 @@ public class SolicitacaoService {
 
     private final SolicitacaoRepository solicitacaoRepository;
     private final HistoricoStatusRepository historicoRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final SecurityAuditService securityAuditService;
     private final SecureRandom secureRandom = new SecureRandom();
 
     @Transactional
@@ -99,7 +104,7 @@ public class SolicitacaoService {
     }
 
     @Transactional(readOnly = true)
-    public Page<SolicitacaoResponseDTO> listarAdmin(String status, String bairro, String tipoSolicitante, Pageable pageable) {
+    public Page<SolicitacaoResumoDTO> listarAdmin(String status, String bairro, String tipoSolicitante, Pageable pageable) {
         Page<Solicitacao> page = solicitacaoRepository.findByFiltros(
                 (status != null && !status.isBlank()) ? status : null,
                 (bairro != null && !bairro.isBlank()) ? bairro : null,
@@ -107,14 +112,7 @@ public class SolicitacaoService {
                 pageable
         );
 
-        List<UUID> ids = page.getContent().stream().map(Solicitacao::getId).toList();
-        Map<UUID, List<HistoricoStatus>> historicoPorSolicitacao = buscarHistoricoAgrupado(ids);
-
-        List<SolicitacaoResponseDTO> content = page.getContent().stream()
-                .map(s -> SolicitacaoResponseDTO.from(s, historicoPorSolicitacao.getOrDefault(s.getId(), List.of())))
-                .toList();
-
-        return new PageImpl<>(content, pageable, page.getTotalElements());
+        return page.map(SolicitacaoResumoDTO::from);
     }
 
     @Transactional(readOnly = true)
@@ -126,7 +124,7 @@ public class SolicitacaoService {
     }
 
     @Transactional
-    public SolicitacaoResponseDTO alterarStatus(UUID id, AlterarStatusDTO dto) {
+    public SolicitacaoResponseDTO alterarStatus(UUID id, AlterarStatusDTO dto, String ipAddress, String userAgent) {
         Solicitacao solicitacao = solicitacaoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Solicitação", id));
 
@@ -144,21 +142,36 @@ public class SolicitacaoService {
                     statusAtual.getLabel().toLowerCase() + ".");
         }
 
+        Usuario autor = currentUsuario();
+
         solicitacao.setStatus(novoStatus);
         solicitacao = solicitacaoRepository.save(solicitacao);
 
         HistoricoStatus historico = HistoricoStatus.builder()
                 .solicitacao(solicitacao)
                 .status(novoStatus.name())
+                .statusAnterior(statusAtual.name())
+                .autor(autor)
                 .nota(dto.getNota())
                 .data(LocalDateTime.now())
                 .build();
         historicoRepository.save(historico);
 
+        securityAuditService.statusChanged(ipAddress, userAgent, autor, solicitacao.getId(),
+                statusAtual.name(), novoStatus.name());
+
         log.info("Status da solicitação {} alterado de {} para {}", solicitacao.getProtocolo(), statusAtual, novoStatus);
 
         List<HistoricoStatus> historicoList = historicoRepository.findBySolicitacaoIdOrderByDataAsc(id);
         return SolicitacaoResponseDTO.from(solicitacao, historicoList);
+    }
+
+    private Usuario currentUsuario() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getName() == null) {
+            return null;
+        }
+        return usuarioRepository.findByEmail(authentication.getName()).orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -211,19 +224,6 @@ public class SolicitacaoService {
             tentativas++;
         } while (solicitacaoRepository.existsByProtocolo(protocolo));
         return protocolo;
-    }
-
-    private Map<UUID, List<HistoricoStatus>> buscarHistoricoAgrupado(List<UUID> solicitacaoIds) {
-        if (solicitacaoIds.isEmpty()) {
-            return Map.of();
-        }
-
-        return historicoRepository.findBySolicitacaoIdInOrderByDataAsc(solicitacaoIds).stream()
-                .collect(Collectors.groupingBy(
-                        h -> h.getSolicitacao().getId(),
-                        LinkedHashMap::new,
-                        Collectors.toList()
-                ));
     }
 
     private int calcularPrioridadeScore(TipoSolicitante tipo, int quantidade, boolean risco, boolean vulneravel) {

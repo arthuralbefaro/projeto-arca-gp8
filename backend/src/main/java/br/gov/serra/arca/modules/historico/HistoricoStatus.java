@@ -1,6 +1,7 @@
 package br.gov.serra.arca.modules.historico;
 
 import br.gov.serra.arca.modules.solicitacoes.Solicitacao;
+import br.gov.serra.arca.modules.usuarios.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +26,13 @@ public class HistoricoStatus {
 
     @Column(nullable = false, length = 30)
     private String status;
+
+    @Column(name = "status_anterior", length = 30)
+    private String statusAnterior;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "autor_usuario_id")
+    private Usuario autor;
 
     @Column(length = 500)
     private String nota;

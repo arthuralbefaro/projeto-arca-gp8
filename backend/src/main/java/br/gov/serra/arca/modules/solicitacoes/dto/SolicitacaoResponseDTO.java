@@ -58,6 +58,8 @@ public class SolicitacaoResponseDTO {
     public static class HistoricoStatusDTO {
         private UUID id;
         private String status;
+        private String statusAnterior;
+        private String operadorEmail;
         private String nota;
         private LocalDateTime data;
 
@@ -65,6 +67,8 @@ public class SolicitacaoResponseDTO {
             return HistoricoStatusDTO.builder()
                     .id(h.getId())
                     .status(h.getStatus())
+                    .statusAnterior(h.getStatusAnterior())
+                    .operadorEmail(h.getAutor() != null ? h.getAutor().getEmail() : null)
                     .nota(h.getNota())
                     .data(h.getData())
                     .build();

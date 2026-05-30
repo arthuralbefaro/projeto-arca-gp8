@@ -3,6 +3,8 @@ package br.gov.serra.arca.modules.solicitacoes;
 import br.gov.serra.arca.common.exception.ResourceNotFoundException;
 import br.gov.serra.arca.modules.historico.HistoricoStatusRepository;
 import br.gov.serra.arca.modules.solicitacoes.dto.ConsultaResponseDTO;
+import br.gov.serra.arca.modules.usuarios.UsuarioRepository;
+import br.gov.serra.arca.security.SecurityAuditService;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -16,7 +18,10 @@ class SolicitacaoServiceTest {
 
     private final SolicitacaoRepository solicitacaoRepository = mock(SolicitacaoRepository.class);
     private final HistoricoStatusRepository historicoRepository = mock(HistoricoStatusRepository.class);
-    private final SolicitacaoService service = new SolicitacaoService(solicitacaoRepository, historicoRepository);
+    private final UsuarioRepository usuarioRepository = mock(UsuarioRepository.class);
+    private final SecurityAuditService securityAuditService = mock(SecurityAuditService.class);
+    private final SolicitacaoService service = new SolicitacaoService(
+            solicitacaoRepository, historicoRepository, usuarioRepository, securityAuditService);
 
     @Test
     void publicLookupRequiresExactProtocolAndCpfPair() {

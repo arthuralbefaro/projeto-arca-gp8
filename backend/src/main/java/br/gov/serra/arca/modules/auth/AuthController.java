@@ -42,13 +42,14 @@ public class AuthController {
             @Valid @RequestBody LoginRequestDTO dto,
             HttpServletRequest request) {
         String clientIp = clientIpResolver.resolve(request);
+        String userAgent = request.getHeader("User-Agent");
         String scope = "login";
 
         try {
             rateLimitService.check(scope, clientIp, RateLimitService.LOGIN);
             AuthService.AuthResult result = authService.login(dto);
             rateLimitService.recordSuccess(scope, clientIp);
-            securityAuditService.loginAttempt(clientIp, dto.getEmail(), true);
+            securityAuditService.loginAttempt(clientIp, userAgent, dto.getEmail(), true);
 
             HttpHeaders headers = new HttpHeaders();
             authCookieService.addAuthCookies(
@@ -69,7 +70,7 @@ public class AuthController {
         } catch (BusinessException ex) {
             rateLimitService.recordFailure(scope, clientIp, RateLimitService.LOGIN);
             rateLimitService.applyProgressiveDelay(scope, clientIp, RateLimitService.LOGIN);
-            securityAuditService.loginAttempt(clientIp, dto.getEmail(), false);
+            securityAuditService.loginAttempt(clientIp, userAgent, dto.getEmail(), false);
             throw new BadCredentialsException("Credenciais inválidas.");
         }
     }
@@ -107,7 +108,8 @@ public class AuthController {
     @Operation(summary = "Sair do painel administrativo")
     public ResponseEntity<ApiResponseDTO<Map<String, Boolean>>> logout(HttpServletRequest request) {
         String refreshToken = authCookieService.getCookie(request, AuthCookieService.REFRESH_COOKIE);
-        authService.revokeByRefreshToken(refreshToken);
+        authService.revokeByRefreshToken(refreshToken).ifPresent(email ->
+                securityAuditService.logout(clientIpResolver.resolve(request), request.getHeader("User-Agent"), email));
 
         HttpHeaders headers = new HttpHeaders();
         authCookieService.clearAuthCookies(headers);
