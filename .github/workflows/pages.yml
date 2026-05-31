@@ -20,7 +20,7 @@ jobs:
 
     env:
       NEXT_PUBLIC_BASE_PATH: /projeto-arca-gp8
-      NEXT_PUBLIC_API_URL: https://SEU-BACKEND.onrender.com
+      NEXT_PUBLIC_MOCK_MODE: 'true'
 
     steps:
       - name: Checkout

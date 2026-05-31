@@ -1,3 +1,14 @@
+import {
+    MOCK_MODE,
+    MOCK_USER,
+    mockConsultar,
+    mockListar,
+    mockObter,
+    mockStats,
+    mockAlterarStatus,
+    mockCriar,
+} from './mockData';
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 const CSRF_COOKIE = 'arca_csrf';
 
@@ -68,22 +79,28 @@ export class ApiError extends Error {
 
 export const authApi = {
     login: (email, senha) =>
-        request('/api/auth/login', {
-            method: 'POST',
-            body: JSON.stringify({ email, senha }),
-        }),
+        MOCK_MODE
+            ? Promise.resolve(MOCK_USER)
+            : request('/api/auth/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, senha }),
+            }),
 
     refresh: () =>
-        request('/api/auth/refresh', {
-            method: 'POST',
-        }, false),
+        MOCK_MODE
+            ? Promise.resolve(MOCK_USER)
+            : request('/api/auth/refresh', {
+                method: 'POST',
+            }, false),
 
     logout: () =>
-        request('/api/auth/logout', {
-            method: 'POST',
-        }, false),
+        MOCK_MODE
+            ? Promise.resolve({})
+            : request('/api/auth/logout', {
+                method: 'POST',
+            }, false),
 
-    me: () => request('/api/auth/me'),
+    me: () => (MOCK_MODE ? Promise.resolve(MOCK_USER) : request('/api/auth/me')),
 
     isAuthenticated: async () => {
         try {
@@ -99,20 +116,25 @@ export const authApi = {
 
 export const solicitacoesApi = {
     criar: (data) =>
-        request('/api/solicitacoes', {
-            method: 'POST',
-            body: JSON.stringify(data),
-        }),
+        MOCK_MODE
+            ? Promise.resolve(mockCriar(data))
+            : request('/api/solicitacoes', {
+                method: 'POST',
+                body: JSON.stringify(data),
+            }),
 
     consultar: ({ protocolo, cpf }) =>
-        request('/api/solicitacoes/consulta', {
-            method: 'POST',
-            body: JSON.stringify({ protocolo, cpf }),
-        }),
+        MOCK_MODE
+            ? Promise.resolve(mockConsultar({ protocolo, cpf }))
+            : request('/api/solicitacoes/consulta', {
+                method: 'POST',
+                body: JSON.stringify({ protocolo, cpf }),
+            }),
 };
 
 export const adminApi = {
     listar: (filtros = {}, page = 0, size = 20) => {
+        if (MOCK_MODE) return Promise.resolve(mockListar(filtros, page, size));
         const params = new URLSearchParams({ page, size });
         if (filtros.status) params.set('status', filtros.status);
         if (filtros.bairro) params.set('bairro', filtros.bairro);
@@ -120,13 +142,15 @@ export const adminApi = {
         return request(`/api/admin/solicitacoes?${params}`);
     },
 
-    obter: (id) => request(`/api/admin/solicitacoes/${id}`),
+    obter: (id) => (MOCK_MODE ? Promise.resolve(mockObter(id)) : request(`/api/admin/solicitacoes/${id}`)),
 
     alterarStatus: (id, status, nota = '') =>
-        request(`/api/admin/solicitacoes/${id}/status`, {
-            method: 'PATCH',
-            body: JSON.stringify({ status, nota }),
-        }),
+        MOCK_MODE
+            ? Promise.resolve(mockAlterarStatus(id, status))
+            : request(`/api/admin/solicitacoes/${id}/status`, {
+                method: 'PATCH',
+                body: JSON.stringify({ status, nota }),
+            }),
 
-    stats: () => request('/api/admin/stats'),
+    stats: () => (MOCK_MODE ? Promise.resolve(mockStats()) : request('/api/admin/stats')),
 };
