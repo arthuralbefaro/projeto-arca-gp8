@@ -319,18 +319,12 @@ export default function AdminRelatoriosPage() {
                                 Painel administrativo
                             </span>
 
-                            <h1 id="admin-dashboard-title">Operação institucional do Programa ARCA.</h1>
+                            <h1 id="admin-dashboard-title">Operação institucional do Programa ARCA</h1>
 
                             <p>
                                 Indicadores, triagem, acompanhamento de prioridades e gestão segura
                                 das solicitações recebidas pela Prefeitura da Serra.
                             </p>
-
-                            <div className="arca-admin-metadata" aria-label="Sinais operacionais">
-                                <span className="arca-chip">Sessão segura</span>
-                                <span className="arca-chip">Cookies HttpOnly</span>
-                                <span className="arca-chip">Auditoria ativa</span>
-                            </div>
                         </div>
 
                         <div className="arca-admin-hero-actions">

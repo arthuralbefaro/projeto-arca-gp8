@@ -1,7 +1,7 @@
 CREATE TABLE auth_sessions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     usuario_id UUID NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
-    refresh_token_hash CHAR(64) NOT NULL UNIQUE,
+    refresh_token_hash VARCHAR(64) NOT NULL UNIQUE,
     revogado BOOLEAN NOT NULL DEFAULT FALSE,
     criado_em TIMESTAMP NOT NULL DEFAULT NOW(),
     expira_em TIMESTAMP NOT NULL,
