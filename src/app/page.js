@@ -14,7 +14,6 @@ import {
   PawPrint,
   SearchCheck,
   ShieldCheck,
-  Sparkles,
   UserCheck,
 } from 'lucide-react';
 
@@ -22,28 +21,28 @@ const quickActions = [
   {
     title: 'Cadastrar tutor',
     description:
-        'Crie o cadastro inicial do responsável e gere um protocolo para acompanhamento.',
+        'Crie o cadastro inicial do responsável e gere um protocolo para acompanhamento',
     href: '/registro',
     icon: ClipboardCheck,
   },
   {
     title: 'Solicitar castração',
     description:
-        'Informe dados do animal e envie a solicitação para análise da equipe responsável.',
+        'Informe dados do animal e envie a solicitação para análise da equipe responsável',
     href: '/servicos/castracao',
     icon: PawPrint,
   },
   {
     title: 'Consultar protocolo',
     description:
-        'Acompanhe status, pendências e próxima etapa usando protocolo e CPF do solicitante.',
+        'Acompanhe status, pendências e próxima etapa usando protocolo e CPF do solicitante',
     href: '/consulta',
     icon: SearchCheck,
   },
   {
     title: 'Ver documentos',
     description:
-        'Confira os documentos que podem ser solicitados na validação do atendimento.',
+        'Confira os documentos que podem ser solicitados na validação do atendimento',
     href: '/documentos',
     icon: FileText,
   },
@@ -73,25 +72,25 @@ const steps = [
     number: '01',
     title: 'Cadastro do tutor',
     description:
-        'O responsável informa seus dados pessoais, endereço, contato e perfil de solicitação.',
+        'O responsável informa seus dados pessoais, endereço, contato e perfil de solicitação',
   },
   {
     number: '02',
     title: 'Solicitação do serviço',
     description:
-        'O tutor registra a demanda, como castração, atendimento ou orientação relacionada ao animal.',
+        'O tutor registra a demanda, como castração, atendimento ou orientação relacionada ao animal',
   },
   {
     number: '03',
     title: 'Triagem da equipe',
     description:
-        'A equipe avalia critérios sociais, documentação, disponibilidade e prioridade de atendimento.',
+        'A equipe avalia critérios sociais, documentação, disponibilidade e prioridade de atendimento',
   },
   {
     number: '04',
     title: 'Acompanhamento por protocolo',
     description:
-        'O cidadão pode consultar o andamento da solicitação e verificar possíveis pendências.',
+        'O cidadão pode consultar o andamento da solicitação e verificar possíveis pendências',
   },
 ];
 
@@ -99,19 +98,19 @@ const priorities = [
   {
     title: 'Famílias em vulnerabilidade',
     description:
-        'Cadastros vinculados a critérios sociais podem receber atenção prioritária na triagem.',
+        'Cadastros vinculados a critérios sociais podem receber atenção prioritária na triagem',
     icon: UserCheck,
   },
   {
     title: 'Proteção animal',
     description:
-        'Protetores, ONGs e casos coletivos podem ser sinalizados para organização da demanda.',
+        'Protetores, ONGs e casos coletivos podem ser sinalizados para organização da demanda',
     icon: ShieldCheck,
   },
   {
     title: 'Saúde pública',
     description:
-        'Situações com risco sanitário, grande volume de animais ou urgência podem ser priorizadas.',
+        'Situações com risco sanitário, grande volume de animais ou urgência podem ser priorizadas',
     icon: HeartPulse,
   },
 ];
@@ -126,18 +125,17 @@ export default function Home() {
             <div className="arca-container arca-hero-inner">
               <div>
               <span className="arca-eyebrow">
-                <Sparkles size={16} />
                 Prefeitura Municipal da Serra
               </span>
 
                 <h1>
-                  Cadastro digital para <span>atendimento animal</span> na Serra.
+                  Cadastro digital para <span>atendimento animal</span> na Serra
                 </h1>
 
                 <p>
                   O Programa ARCA organiza o cadastro de tutores, solicitações de
                   castração, triagem de informações e acompanhamento do processo
-                  por protocolo.
+                  por protocolo
                 </p>
 
                 <div className="arca-hero-actions">
@@ -227,7 +225,7 @@ export default function Home() {
 
                 <p>
                   Escolha uma das opções abaixo para iniciar cadastro, solicitar
-                  atendimento ou acompanhar uma solicitação já registrada.
+                  atendimento ou acompanhar uma solicitação já registrada
                 </p>
               </div>
 
@@ -267,12 +265,12 @@ export default function Home() {
                 Jornada do atendimento
               </span>
 
-                <h2>Um fluxo mais claro para tutores e equipe responsável.</h2>
+                <h2>Um fluxo mais claro para tutores e equipe responsável</h2>
 
                 <p>
                   A plataforma foi pensada para reduzir dúvidas, organizar a
                   demanda e permitir que cada solicitação tenha uma etapa
-                  identificável.
+                  identificável
                 </p>
               </div>
 
@@ -302,12 +300,12 @@ export default function Home() {
                 Critérios de prioridade
               </span>
 
-                <h2>Triagem com mais organização e transparência.</h2>
+                <h2>Triagem com mais organização e transparência</h2>
 
                 <p>
                   A análise pode considerar vulnerabilidade social, proteção
                   animal, disponibilidade de vagas, documentação e fatores
-                  relacionados à saúde pública.
+                  relacionados à saúde pública
                 </p>
               </div>
 
@@ -336,7 +334,7 @@ export default function Home() {
           <section className="arca-section-sm">
             <div className="arca-container">
               <div className="arca-highlight">
-                <h2>Tenha seu protocolo em mãos para acompanhar a solicitação.</h2>
+                <h2>Tenha seu protocolo em mãos para acompanhar a solicitação</h2>
 
                 <p>
                   Depois de preencher o cadastro ou solicitar um serviço, o

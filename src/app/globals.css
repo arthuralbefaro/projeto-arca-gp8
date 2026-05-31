@@ -1,33 +1,33 @@
 :root {
-  --arca-blue-950: #071f4f;
-  --arca-blue-900: #0a3478;
-  --arca-blue-800: #0b4f9f;
-  --arca-blue-700: #0068b7;
-  --arca-cyan-700: #0087a7;
-  --arca-green-700: #2f7f3e;
-  --arca-green-600: #4c9a3f;
-  --arca-lime-500: #91be3e;
-  --arca-yellow-500: #f5b642;
-  --arca-red-600: #c9303f;
+  --arca-blue-950: #0b2a5b;
+  --arca-blue-900: #0c326f;
+  --arca-blue-800: #14439e;
+  --arca-blue-700: #1351b4;
+  --arca-cyan-700: #1351b4;
+  --arca-green-700: #168821;
+  --arca-green-600: #1f9d2e;
+  --arca-lime-500: #ffcd07;
+  --arca-yellow-500: #ffcd07;
+  --arca-red-600: #e52207;
 
-  --arca-neutral-950: #111827;
-  --arca-neutral-800: #273447;
-  --arca-neutral-700: #3d4d63;
-  --arca-neutral-600: #607086;
-  --arca-neutral-300: #d8e0ea;
-  --arca-neutral-200: #e7edf4;
-  --arca-neutral-100: #f3f7fb;
-  --arca-neutral-50: #f8fbfd;
+  --arca-neutral-950: #1c1c1c;
+  --arca-neutral-800: #333333;
+  --arca-neutral-700: #555555;
+  --arca-neutral-600: #555555;
+  --arca-neutral-300: #cccccc;
+  --arca-neutral-200: #ededed;
+  --arca-neutral-100: #f2f2f2;
+  --arca-neutral-50: #f8f8f8;
   --arca-white: #ffffff;
 
-  --arca-bg: #f5f8fb;
+  --arca-bg: #f8f8f8;
   --arca-surface: #ffffff;
-  --arca-surface-muted: #f8fbfd;
-  --arca-surface-blue: #eef6fb;
-  --arca-border: rgba(15, 52, 91, 0.13);
-  --arca-border-strong: rgba(15, 52, 91, 0.22);
+  --arca-surface-muted: #f8f8f8;
+  --arca-surface-blue: #eaf0fb;
+  --arca-border: #dcdfe3;
+  --arca-border-strong: #c2c7ce;
   --arca-text: var(--arca-neutral-950);
-  --arca-muted: var(--arca-neutral-600);
+  --arca-muted: var(--arca-neutral-700);
 
   --arca-font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --arca-step-0: 0.875rem;
@@ -50,15 +50,15 @@
   --arca-space-16: 64px;
   --arca-space-20: 80px;
 
-  --arca-radius: 8px;
-  --arca-radius-sm: 6px;
-  --arca-radius-lg: 10px;
+  --arca-radius: 6px;
+  --arca-radius-sm: 4px;
+  --arca-radius-lg: 8px;
   --arca-pill: 999px;
 
-  --arca-shadow-sm: 0 1px 2px rgba(15, 52, 91, 0.06);
-  --arca-shadow-md: 0 10px 28px rgba(15, 52, 91, 0.09);
-  --arca-shadow-lg: 0 18px 48px rgba(15, 52, 91, 0.13);
-  --arca-focus: 0 0 0 4px rgba(0, 104, 183, 0.18);
+  --arca-shadow-sm: 0 1px 2px rgba(12, 50, 111, 0.05);
+  --arca-shadow-md: 0 1px 3px rgba(12, 50, 111, 0.07);
+  --arca-shadow-lg: 0 2px 8px rgba(12, 50, 111, 0.1);
+  --arca-focus: 0 0 0 3px rgba(19, 81, 180, 0.28);
 }
 
 * {
@@ -72,11 +72,7 @@ html {
 body {
   margin: 0;
   min-width: 320px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(245, 248, 251, 0.96)),
-    linear-gradient(90deg, rgba(0, 104, 183, 0.06) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(0, 104, 183, 0.04) 1px, transparent 1px);
-  background-size: auto, 48px 48px, 48px 48px;
+  background: var(--arca-bg);
   color: var(--arca-text);
   font-family: var(--arca-font-sans);
   text-rendering: optimizeLegibility;
@@ -170,16 +166,15 @@ svg {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--arca-surface);
   border-bottom: 1px solid var(--arca-border);
-  backdrop-filter: blur(18px);
 }
 
 .arca-gov-strip {
-  color: rgba(255, 255, 255, 0.9);
-  background: linear-gradient(90deg, var(--arca-blue-950), var(--arca-blue-800), var(--arca-green-700));
+  color: rgba(255, 255, 255, 0.92);
+  background: var(--arca-blue-900);
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .arca-gov-strip-inner {
@@ -213,7 +208,7 @@ svg {
   display: flex;
   align-items: center;
   gap: var(--arca-space-3);
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .arca-brand-mark {
@@ -252,7 +247,7 @@ svg {
 .arca-brand-text span {
   color: var(--arca-muted);
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .arca-nav {
@@ -261,16 +256,16 @@ svg {
   gap: var(--arca-space-1);
   padding: var(--arca-space-1);
   border: 1px solid var(--arca-border);
-  border-radius: var(--arca-pill);
+  border-radius: var(--arca-radius);
   background: var(--arca-surface-muted);
 }
 
 .arca-nav a {
   color: var(--arca-neutral-700);
   font-size: 0.9rem;
-  font-weight: 850;
+  font-weight: 600;
   padding: 10px 13px;
-  border-radius: var(--arca-pill);
+  border-radius: var(--arca-radius-sm);
   transition: background 0.18s ease, color 0.18s ease;
 }
 
@@ -321,14 +316,14 @@ svg {
   align-items: center;
   gap: var(--arca-space-2);
   padding: 8px 12px;
-  border-radius: var(--arca-pill);
-  background: #e8f3ec;
-  color: var(--arca-green-700);
+  border-radius: var(--arca-radius-sm);
+  background: var(--arca-surface-blue);
+  color: var(--arca-blue-900);
   font-size: 0.78rem;
-  font-weight: 950;
+  font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  border: 1px solid rgba(47, 127, 62, 0.18);
+  border: 1px solid var(--arca-border);
 }
 
 .arca-hero h1,
@@ -389,15 +384,9 @@ svg {
   overflow: hidden;
   min-height: 500px;
   border-radius: var(--arca-radius-lg);
-  background: linear-gradient(180deg, var(--arca-white), #eef6fb);
+  background: var(--arca-surface);
   border: 1px solid var(--arca-border);
-  box-shadow: var(--arca-shadow-lg);
-  transition: transform 0.24s ease, box-shadow 0.24s ease;
-}
-
-.arca-hero-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 22px 54px rgba(15, 52, 91, 0.15);
+  box-shadow: var(--arca-shadow-md);
 }
 
 .arca-hero-card-header {
@@ -420,7 +409,7 @@ svg {
   margin-top: 3px;
   color: var(--arca-muted);
   font-size: 0.84rem;
-  font-weight: 750;
+  font-weight: 600;
 }
 
 .arca-live-dot {
@@ -438,15 +427,13 @@ svg {
   align-items: flex-end;
   justify-content: center;
   padding: var(--arca-space-8) var(--arca-space-8) 0;
-  background:
-    linear-gradient(135deg, rgba(0, 104, 183, 0.1), rgba(47, 127, 62, 0.08)),
-    var(--arca-surface-blue);
+  background: var(--arca-surface-blue);
 }
 
 .arca-hero-media img {
   width: min(520px, 100%);
   height: auto;
-  filter: drop-shadow(0 24px 24px rgba(15, 52, 91, 0.12));
+  filter: drop-shadow(0 6px 10px rgba(12, 50, 111, 0.1));
 }
 
 .arca-hero-metrics {
@@ -475,7 +462,7 @@ svg {
   margin-top: var(--arca-space-2);
   color: var(--arca-muted);
   font-size: 0.82rem;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.35;
 }
 
@@ -486,36 +473,26 @@ svg {
   gap: var(--arca-space-2);
   min-height: 46px;
   padding: 0 18px;
-  border-radius: var(--arca-pill);
+  border-radius: var(--arca-radius);
   border: 1px solid transparent;
-  font-weight: 900;
+  font-weight: 600;
   line-height: 1;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
   cursor: pointer;
 }
 
-.arca-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-}
-
-.arca-btn:active:not(:disabled),
-.arca-mini-btn:active:not(:disabled) {
-  transform: translateY(0);
-}
-
 .arca-btn:disabled {
-  opacity: 0.56;
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
 .arca-btn-primary {
   color: var(--arca-white);
-  background: linear-gradient(135deg, var(--arca-blue-800), var(--arca-cyan-700));
-  box-shadow: 0 12px 28px rgba(0, 104, 183, 0.24);
+  background: var(--arca-blue-700);
 }
 
 .arca-btn-primary:hover:not(:disabled) {
-  box-shadow: 0 18px 40px rgba(0, 104, 183, 0.28);
+  background: var(--arca-blue-900);
 }
 
 .arca-btn-secondary {
@@ -542,19 +519,14 @@ svg {
   border-radius: var(--arca-radius);
   background: var(--arca-surface);
   border: 1px solid var(--arca-border);
-  box-shadow: var(--arca-shadow-md);
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-  animation: arcaFadeUp 0.5s ease both;
+  box-shadow: var(--arca-shadow-sm);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+  animation: arcaFadeUp 0.4s ease both;
 }
 
 .arca-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(0, 104, 183, 0.26);
-  box-shadow: var(--arca-shadow-lg);
-}
-
-.arca-card:focus-visible {
-  transform: translateY(-2px);
+  border-color: var(--arca-blue-700);
+  box-shadow: var(--arca-shadow-md);
 }
 
 .arca-card-icon,
@@ -567,8 +539,7 @@ svg {
   margin-bottom: var(--arca-space-5);
   border-radius: var(--arca-radius);
   color: var(--arca-white);
-  background: linear-gradient(135deg, var(--arca-blue-800), var(--arca-green-700));
-  box-shadow: 0 12px 24px rgba(15, 52, 91, 0.15);
+  background: var(--arca-blue-700);
 }
 
 .arca-card h3 {
@@ -589,7 +560,7 @@ svg {
   align-items: center;
   gap: var(--arca-space-2);
   color: var(--arca-blue-800);
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .arca-delay-1 {
@@ -656,13 +627,13 @@ svg {
 .arca-stat-number {
   color: var(--arca-blue-800);
   font-size: 1.75rem;
-  font-weight: 950;
+  font-weight: 700;
 }
 
 .arca-stat-label {
   color: var(--arca-muted);
   font-size: 0.9rem;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.35;
 }
 
@@ -686,8 +657,8 @@ svg {
   place-items: center;
   border-radius: var(--arca-radius);
   color: var(--arca-white);
-  background: linear-gradient(135deg, var(--arca-blue-800), var(--arca-cyan-700));
-  font-weight: 950;
+  background: var(--arca-blue-700);
+  font-weight: 700;
 }
 
 .arca-timeline-content {
@@ -715,10 +686,8 @@ svg {
   padding: var(--arca-space-10);
   border-radius: var(--arca-radius-lg);
   color: var(--arca-white);
-  background:
-    linear-gradient(135deg, rgba(7, 31, 79, 0.96), rgba(0, 104, 183, 0.94)),
-    var(--arca-blue-950);
-  box-shadow: var(--arca-shadow-lg);
+  background: var(--arca-blue-900);
+  box-shadow: var(--arca-shadow-md);
 }
 
 .arca-highlight h2 {
@@ -739,12 +708,12 @@ svg {
   margin-top: var(--arca-space-16);
   padding: var(--arca-space-12) 0 var(--arca-space-8);
   color: #dce8f4;
-  background: linear-gradient(135deg, #06172f, #092f6a 58%, #1f5d35);
+  background: var(--arca-blue-950);
 }
 
 .arca-footer-grid {
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr 0.85fr;
+  grid-template-columns: 1.4fr 0.85fr 0.95fr 0.95fr;
   gap: var(--arca-space-8);
 }
 
@@ -784,7 +753,7 @@ svg {
 
 .arca-footer-links a:hover {
   color: var(--arca-white);
-  transform: translateX(3px);
+  text-decoration: underline;
 }
 
 .arca-footer-bottom {
@@ -829,7 +798,7 @@ svg {
   display: grid;
   gap: var(--arca-space-2);
   color: var(--arca-neutral-800);
-  font-weight: 850;
+  font-weight: 600;
 }
 
 .arca-form-grid input,
@@ -851,7 +820,7 @@ select,
 textarea {
   min-height: 46px;
   border-radius: var(--arca-radius);
-  border: 1px solid rgba(15, 52, 91, 0.18);
+  border: 1px solid var(--arca-border-strong);
   background: var(--arca-white);
   color: var(--arca-text);
   outline: none;
@@ -943,9 +912,9 @@ textarea:disabled {
   border-radius: var(--arca-radius);
   background: var(--arca-surface-blue);
   color: var(--arca-blue-950);
-  border: 1px dashed rgba(0, 104, 183, 0.35);
+  border: 1px dashed var(--arca-blue-700);
   font-size: clamp(1.2rem, 4vw, 2rem);
-  font-weight: 950;
+  font-weight: 700;
   letter-spacing: 0.02em;
 }
 
@@ -968,7 +937,7 @@ textarea:disabled {
   display: grid;
   gap: var(--arca-space-2);
   color: var(--arca-neutral-800);
-  font-weight: 850;
+  font-weight: 600;
 }
 
 .arca-search-field span {
@@ -1009,7 +978,7 @@ textarea:disabled {
   display: block;
   color: var(--arca-muted);
   font-size: 0.76rem;
-  font-weight: 950;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -1022,9 +991,9 @@ textarea:disabled {
   justify-content: center;
   min-height: 30px;
   padding: 0 12px;
-  border-radius: var(--arca-pill);
+  border-radius: var(--arca-radius-sm);
   font-size: 0.78rem;
-  font-weight: 950;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -1103,7 +1072,7 @@ textarea:disabled {
   margin-bottom: var(--arca-space-1);
   color: var(--arca-muted);
   font-size: 0.76rem;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .arca-info-grid strong {
@@ -1115,7 +1084,7 @@ textarea:disabled {
   margin: var(--arca-space-5) 0;
   border-radius: var(--arca-radius);
   background: var(--arca-surface-blue);
-  border: 1px solid rgba(0, 104, 183, 0.14);
+  border: 1px solid var(--arca-border);
 }
 
 .arca-next-step strong {
@@ -1152,7 +1121,7 @@ textarea:disabled {
 }
 
 .arca-status-step.is-current {
-  border-color: rgba(0, 104, 183, 0.32);
+  border-color: var(--arca-blue-700);
   box-shadow: var(--arca-shadow-sm);
 }
 
@@ -1185,7 +1154,7 @@ textarea:disabled {
   display: block;
   margin-top: var(--arca-space-2);
   color: var(--arca-muted);
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .arca-toast {
@@ -1200,7 +1169,7 @@ textarea:disabled {
   padding: 14px 16px;
   border-radius: var(--arca-radius);
   color: var(--arca-white);
-  background: linear-gradient(135deg, var(--arca-blue-950), var(--arca-blue-800));
+  background: var(--arca-blue-900);
   box-shadow: var(--arca-shadow-lg);
   animation: arcaFadeUp 0.2s ease both;
 }
@@ -1270,8 +1239,8 @@ textarea:disabled {
   padding: var(--arca-space-8);
   border-radius: var(--arca-radius-lg);
   color: var(--arca-white);
-  background: linear-gradient(135deg, var(--arca-blue-950), var(--arca-blue-800) 62%, var(--arca-green-700));
-  box-shadow: var(--arca-shadow-lg);
+  background: var(--arca-blue-900);
+  box-shadow: var(--arca-shadow-md);
 }
 
 .arca-admin-hero::after {
@@ -1334,19 +1303,19 @@ textarea:disabled {
   border-radius: var(--arca-radius);
   background: var(--arca-white);
   border: 1px solid var(--arca-border);
-  box-shadow: var(--arca-shadow-md);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  box-shadow: var(--arca-shadow-sm);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
 }
 
 .arca-stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--arca-shadow-lg);
+  border-color: var(--arca-blue-700);
+  box-shadow: var(--arca-shadow-md);
 }
 
 .arca-stat-card span {
   color: var(--arca-muted);
   font-size: 0.82rem;
-  font-weight: 950;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -1424,7 +1393,7 @@ textarea:disabled {
   gap: var(--arca-space-4);
   color: var(--arca-neutral-700);
   font-size: 0.9rem;
-  font-weight: 850;
+  font-weight: 600;
 }
 
 .arca-bar-track {
@@ -1438,7 +1407,7 @@ textarea:disabled {
   height: 100%;
   min-width: 4px;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--arca-blue-800), var(--arca-green-600));
+  background: var(--arca-blue-700);
   transition: width 0.32s ease;
 }
 
@@ -1462,7 +1431,7 @@ textarea:disabled {
 .arca-ops-item span {
   color: var(--arca-muted);
   font-size: 0.84rem;
-  font-weight: 850;
+  font-weight: 600;
 }
 
 .arca-ops-item strong {
@@ -1517,7 +1486,7 @@ textarea:disabled {
   overflow-x: auto;
   border-radius: var(--arca-radius);
   border: 1px solid var(--arca-border);
-  scrollbar-color: rgba(0, 104, 183, 0.42) var(--arca-neutral-100);
+  scrollbar-color: var(--arca-blue-700) var(--arca-neutral-100);
   scrollbar-width: thin;
 }
 
@@ -1565,12 +1534,12 @@ textarea:disabled {
 }
 
 .arca-admin-table tbody tr:hover {
-  background: #f9fcff;
+  background: var(--arca-neutral-50);
 }
 
 .arca-table-primary {
   color: var(--arca-blue-950);
-  font-weight: 950;
+  font-weight: 700;
 }
 
 .arca-table-secondary {
@@ -1584,17 +1553,17 @@ textarea:disabled {
   min-height: 34px;
   padding: 0 12px;
   border: 1px solid var(--arca-border);
-  border-radius: var(--arca-pill);
+  border-radius: var(--arca-radius-sm);
   background: var(--arca-white);
   color: var(--arca-blue-900);
-  font-weight: 900;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease;
 }
 
 .arca-mini-btn:hover {
   background: var(--arca-surface-blue);
-  border-color: rgba(0, 104, 183, 0.26);
+  border-color: var(--arca-blue-700);
 }
 
 .arca-detail-panel {
@@ -1620,7 +1589,7 @@ textarea:disabled {
   position: relative;
   overflow: hidden;
   border-radius: var(--arca-radius);
-  background: linear-gradient(90deg, #edf3f8 0%, #f8fbfd 45%, #edf3f8 100%);
+  background: linear-gradient(90deg, #ededed 0%, #f6f6f6 45%, #ededed 100%);
   background-size: 220% 100%;
   animation: arcaSkeleton 1.2s ease-in-out infinite;
 }
@@ -1659,7 +1628,7 @@ textarea:disabled {
   justify-content: center;
   gap: var(--arca-space-4);
   padding: var(--arca-space-5) 0 0;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--arca-muted);
 }
 
@@ -1729,15 +1698,14 @@ textarea:disabled {
   border-radius: var(--arca-radius);
   background: var(--arca-white);
   border: 1px solid var(--arca-border);
-  box-shadow: var(--arca-shadow-md);
-  animation: arcaFadeUp 0.45s ease both;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  box-shadow: var(--arca-shadow-sm);
+  animation: arcaFadeUp 0.4s ease both;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
 }
 
 .arca-document-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(0, 104, 183, 0.26);
-  box-shadow: var(--arca-shadow-lg);
+  border-color: var(--arca-blue-700);
+  box-shadow: var(--arca-shadow-md);
 }
 
 .arca-document-card h2 {
@@ -1757,7 +1725,7 @@ textarea:disabled {
   position: absolute;
   right: 20px;
   bottom: 20px;
-  color: rgba(47, 127, 62, 0.42);
+  color: var(--arca-neutral-300);
 }
 
 .arca-cep-field {
@@ -1789,7 +1757,7 @@ textarea:disabled {
   margin-top: 2px;
   color: var(--arca-red-600);
   font-size: 0.82rem;
-  font-weight: 850;
+  font-weight: 600;
 }
 
 @keyframes arcaFadeUp {
@@ -1843,7 +1811,8 @@ textarea:disabled {
 
   .arca-grid-4,
   .arca-grid-3,
-  .arca-analytics-grid {
+  .arca-analytics-grid,
+  .arca-footer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1875,7 +1844,7 @@ textarea:disabled {
     padding: 13px 14px;
     border-radius: var(--arca-radius);
     color: var(--arca-neutral-700);
-    font-weight: 850;
+    font-weight: 600;
   }
 
   .arca-mobile-menu a:hover {

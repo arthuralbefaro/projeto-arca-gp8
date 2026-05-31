@@ -1,6 +1,15 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
+import {
+  Accessibility,
+  Mail,
+  MapPin,
+  Megaphone,
+  Phone,
+  ScrollText,
+  ShieldCheck,
+  Users,
+} from 'lucide-react';
 import { assetPath } from '@/lib/assets';
 
 export default function Footer() {
@@ -45,20 +54,46 @@ export default function Footer() {
             </div>
 
             <div>
+              <h4>Institucional</h4>
+
+              <div className="arca-footer-links">
+                <span>
+                  <ScrollText size={16} /> Transparência
+                </span>
+
+                <span>
+                  <ShieldCheck size={16} /> Privacidade e LGPD
+                </span>
+
+                <span>
+                  <Accessibility size={16} /> Acessibilidade
+                </span>
+
+                <span>
+                  <Megaphone size={16} /> Ouvidoria
+                </span>
+              </div>
+            </div>
+
+            <div>
               <h4>Atendimento</h4>
 
               <div className="arca-footer-links">
-              <span>
-                <Phone size={16} /> Horário comercial
-              </span>
+                <span>
+                  <Users size={16} /> Atendimento ao cidadão
+                </span>
 
                 <span>
-                <Mail size={16} /> Secretaria responsável
-              </span>
+                  <Phone size={16} /> Horário comercial
+                </span>
 
                 <span>
-                <MapPin size={16} /> Serra/ES
-              </span>
+                  <Mail size={16} /> Secretaria responsável
+                </span>
+
+                <span>
+                  <MapPin size={16} /> Serra/ES
+                </span>
 
                 <Link href="/admin/relatorios">Painel administrativo</Link>
               </div>
@@ -66,7 +101,7 @@ export default function Footer() {
           </div>
 
           <div className="arca-footer-bottom">
-            <span>Programa ARCA — Prefeitura Municipal da Serra.</span>
+            <span>Programa ARCA — Prefeitura Municipal da Serra. Todos os direitos reservados.</span>
             <span>
               <ShieldCheck size={14} /> Ambiente institucional com acesso administrativo protegido
             </span>
