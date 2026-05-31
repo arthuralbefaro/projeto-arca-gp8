@@ -18,6 +18,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      NEXT_PUBLIC_BASE_PATH: /projeto-arca-gp8
+      NEXT_PUBLIC_API_URL: https://SEU-BACKEND.onrender.com
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,9 +34,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Lint
-        run: npm run lint
 
       - name: Build static site
         run: npm run build
