@@ -1,7 +1,7 @@
 # Programa ARCA — Atendimento e Registro de Cadastro Animal
 
 > Plataforma institucional de atendimento animal para a Prefeitura da Serra/ES
-> Projeto desenvolvido por Arthur Nascimento Albefaro Penna - Cauâ Robson - Mitre Minassa Neto.
+> Projeto desenvolvido por Arthur Nascimento Albefaro Penna - Cauâ Robson Candeias Altino - Mitre Minassa Neto.
 
 ---
 
@@ -35,7 +35,7 @@ A autenticação usa **JWT com cookies seguros e proteção CSRF**, e o banco é
 
 O projeto já está hospedado no GitHub pages, segue o link:
 
-
+[https://arthuralbefaro.github.io/projeto-arca-gp8/]
 
 ---
 
