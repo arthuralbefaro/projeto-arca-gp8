@@ -1,7 +1,7 @@
 # Programa ARCA — Atendimento e Registro de Cadastro Animal
 
 > Plataforma institucional de atendimento animal para a Prefeitura da Serra/ES
-> Projeto desenvolvido por Arthur Nascimento Albefaro Penna - Cauâ Robson Candeias Altino - Mitre Minassa Neto.
+> Projeto desenvolvido por Arthur Nascimento Albefaro Penna - Cauã Robson Candeias Altino.
 
 ---
 
